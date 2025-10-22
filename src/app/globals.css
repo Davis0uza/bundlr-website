@@ -1,17 +1,35 @@
 @import "tailwindcss";
 
+/* tokens base que já tens */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #ffffff;      /* light background */
+  --foreground: #171717;      /* light text */
 }
 
+/* ➜ Personalização do tema (Tailwind v4) */
 @theme inline {
+  /* mapeia para bg-background, text-foreground, etc. */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+
+  /* usa Roboto como sans global */
+  --font-sans: var(--font-roboto);
   --font-mono: var(--font-geist-mono);
+
+  /* >>> Paleta Bundlr (exemplo) <<< */
+  --color-eggshell: #f7f5f2;
+  --color-lilac-50: #f8f4ff;
+  --color-lilac-150: #efe7ff;
+  --color-lilac-250: #e4d8ff;
+  --color-lilac-350: #cdbbff;
+  --color-ink: #1a1325;       /* texto escuro elegante */
+
+  /* raios, sombras, etc. (opcional)
+  --radius-card: 1rem;
+  */
 }
 
+/* Dark mode (se quiseres manter) */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -19,8 +37,14 @@
   }
 }
 
+/* resets/estilos globais leves */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans); 
+}
+
+/* Fundo base da página (fallback) */
+html, body {
+  background: #f5f7fb;
 }
