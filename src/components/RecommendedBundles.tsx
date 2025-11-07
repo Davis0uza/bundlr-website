@@ -1,63 +1,55 @@
+// components/RecommendedBundles.tsx
 "use client";
 
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { BUNDLES, type Bundle } from "@/data/bundles";
 
-type GridItem =
-  | { kind: "service"; label: string; note?: string }
-  | { kind: "cta" };
-
-type Bundle = {
-  id: string;
-  name: string;           // Ex.: Essencial, Standard, Avançado+
-  subtitle?: string;      // Ex.: “web + ia + social”
-  grid: [GridItem, GridItem, GridItem, GridItem]; // 2x2
+export type BundleSelection = {
+  /** Seleção por ids (ordem respeitada) */
+  ids?: string[];
+  /** Seleção por índices (ordem respeitada) */
+  indices?: number[];
+  /** Seleção por tag (ex.: "Destaque", "Web", "Marketing", ...) */
+  tag?: string;
+  /** Limitar nº de cards (após seleção) */
+  limit?: number;
 };
 
 export default function RecommendedBundles({
   emailTo = "hello@teu-dominio.com",
   className = "",
+  selection,
 }: {
   emailTo?: string;
   className?: string;
+  selection?: BundleSelection;
 }) {
-  const bundles: Bundle[] = [
-    {
-      id: "essencial",
-      name: "Essencial",
-      subtitle: "web + ia + social",
-      grid: [
-        { kind: "service", label: "Web — Landing Page", note: "simples e moderno" },           // Mini → Landing Page
-        { kind: "service", label: "IA — Chatbot WhatsApp", note: "≈ 1 000 conversas/mês" },     // Mini
-        { kind: "service", label: "Social — Instagram", note: "4 posts/semana" },               // Mini
-        { kind: "cta" },
-      ],
-    },
-    {
-      id: "standard",
-      name: "Standard",
-      subtitle: "essencial + extras",
-      grid: [
-        { kind: "service", label: "Web — Login Google", note: "+ comentários" },                // Standard
-        { kind: "service", label: "Marca — Logo animado", note: "variações cromáticas" },       // Standard
-        { kind: "service", label: "IA — Chatbot WhatsApp", note: "≈ 5 000 conversas/mês" },     // Standard
-        { kind: "cta" },
-      ],
-    },
-    {
-      id: "avancado",
-      name: "Avançado +",
-      subtitle: "e-commerce + identidade",
-      grid: [
-        { kind: "service", label: "Web — Reservas + Pagamentos" },                              // Pro
-        { kind: "service", label: "Marca — Identidade Visual" },                                // Pro
-        { kind: "service", label: "Social — Instagram + Facebook", note: "campanhas & captação" }, // Pro
-        { kind: "cta" },
-      ],
-    },
-  ];
+  const pick = (all: Bundle[], sel?: BundleSelection): Bundle[] => {
+    if (!sel) return all;
 
+    // Prioridade: ids > indices > tag
+    if (sel.ids?.length) {
+      const byId = new Map(all.map((b) => [b.id, b] as const));
+      const ordered = sel.ids.map((id) => byId.get(id)).filter(Boolean) as Bundle[];
+      return sel.limit ? ordered.slice(0, sel.limit) : ordered;
+    }
+
+    if (sel.indices?.length) {
+      const ordered = sel.indices.map((i) => all[i]).filter(Boolean) as Bundle[];
+      return sel.limit ? ordered.slice(0, sel.limit) : ordered;
+    }
+
+    if (sel.tag) {
+      const filtered = all.filter((b) => b.tags?.includes(sel.tag!));
+      return sel.limit ? filtered.slice(0, sel.limit) : filtered;
+    }
+
+    return sel.limit ? all.slice(0, sel.limit) : all;
+  };
+
+  const bundles = pick(BUNDLES, selection);
   const railRef = useRef<HTMLDivElement | null>(null);
 
   const scrollBy = (dir: "left" | "right") => {
@@ -78,10 +70,10 @@ export default function RecommendedBundles({
       `Cumprimentos,`,
       `"Seu Nome"`,
     ].join("\n");
-    return `mailto:${emailTo}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
-      body
-    )}`;
+    return `mailto:${emailTo}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
+
+  if (!bundles.length) return null;
 
   return (
     <section
@@ -146,9 +138,7 @@ export default function RecommendedBundles({
                           {cell.label}
                         </div>
                         {cell.note && (
-                          <div className="mt-0.5 text-[11px] text-[#6b7a96]">
-                            {cell.note}
-                          </div>
+                          <div className="mt-0.5 text-[11px] text-[#6b7a96]">{cell.note}</div>
                         )}
                       </div>
                     ) : (
@@ -158,13 +148,8 @@ export default function RecommendedBundles({
                         className="group grid place-items-center rounded-2xl border border-transparent bg-[linear-gradient(135deg,#ffd1f7_0%,#bfe5ff_100%)] p-3 text-center text-[#0b1220] shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                         aria-label={`Quero o plano ${b.name}`}
                       >
-                        <span className="text-base font-semibold">
-                          Quero!
-                        </span>
-                        <ArrowRight
-                          size={18}
-                          className="mt-1 transition group-hover:translate-x-0.5"
-                        />
+                        <span className="text-base font-semibold">Quero!</span>
+                        <ArrowRight size={18} className="mt-1 transition group-hover:translate-x-0.5" />
                       </a>
                     )
                   )}

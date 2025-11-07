@@ -9,13 +9,15 @@ const robotoBold = Roboto({ weight: "800", subsets: ["latin"], display: "swap" }
 
 export type AnyIcon = ComponentType<{ className?: string; isHover?: boolean }>;
 
-const services: { label: string; Icon: AnyIcon; href: string }[] = [
-  { label: "MARKETING",  Icon: (p) => <GifOnHover name="marketing"  {...p} />, href: "#marketing" },
-  { label: "DESIGN",     Icon: (p) => <GifOnHover name="design"     {...p} />, href: "#design" },
-  { label: "WEB",        Icon: (p) => <GifOnHover name="web"        {...p} />, href: "#web" },
-  { label: "IA",         Icon: (p) => <GifOnHover name="ia"         {...p} />, href: "#ia" },
-  { label: "APPS",       Icon: (p) => <GifOnHover name="apps"       {...p} />, href: "#apps" },
-  { label: "CONTACTAR",  Icon: (p) => <GifOnHover name="contactar"  {...p} />, href: "mailto:hello@teu-dominio.com" },
+// CircleNav.tsx (home)  — alterar apenas este array
+const services = [
+  { label: "MARKETING", Icon: (p) => <GifOnHover name="marketing" {...p} />, href: "/page2#section-marketing" },
+  { label: "DESIGN",    Icon: (p) => <GifOnHover name="design"    {...p} />, href: "/page2#section-design" },
+  { label: "WEB",       Icon: (p) => <GifOnHover name="web"       {...p} />, href: "/page2#section-web" },
+  { label: "IA",        Icon: (p) => <GifOnHover name="ia"        {...p} />, href: "/page2#section-ia" },
+  { label: "APPS",      Icon: (p) => <GifOnHover name="apps"      {...p} />, href: "/page2#section-apps" },
+  // CONTACTAR agora aponta para uma rota (a criar) em vez de mailto
+  { label: "CONTACTAR", Icon: (p) => <GifOnHover name="contactar" {...p} />, href: "/contactar" },
 ];
 
 export default function CircleNav() {
@@ -52,7 +54,6 @@ function Circle({
   const variants: Variants = {
     rest: { scale: 1, y: 0, transition: { type: "spring", stiffness: 140, damping: 18 } },
     hover: { scale: 1.15, y: 0, transition: { duration: 0.22 } },
-    click: { scale: 1.1, y: 0, transition: { duration: 0.38, ease: "easeInOut" } },
   };
 
   const [isHover, setIsHover] = useState(false);
@@ -71,17 +72,7 @@ function Circle({
     glowCtl.start({ opacity: 0, transition: { duration: 0.22 } });
     iconCtl.start({ color: BLUE_ICON, transition: { duration: 0.22 } });
   };
-  const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    await Promise.all([
-      shell.start("click"),
-      ringOn.start({ opacity: 1, transition: { duration: 0.38, ease: "easeInOut" } }),
-      glowCtl.start({ opacity: 0.35, transition: { duration: 0.38, ease: "easeInOut" } }),
-      iconCtl.start({ color: "#efd1f4", transition: { duration: 0.38, ease: "easeInOut" } }),
-    ]);
-    window.location.assign(href);
-  };
-
+  
   const uid = useId();
   const baseGradId = `base-${uid}`;
   const hoverGradId = `hover-${uid}`;
@@ -102,7 +93,7 @@ function Circle({
       onMouseLeave={handleLeave}
       onFocus={handleEnter}
       onBlur={handleLeave}
-      onClick={handleClick}
+      // Sem onClick: o link navega imediatamente sem esperar animação
     >
       <motion.div
         role="button"

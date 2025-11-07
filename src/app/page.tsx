@@ -6,6 +6,8 @@ import ChatFAQ from "@/components/ChatFAQ";
 import SmartComposer from "@/components/SmartComposer";
 import RecommendedBundles from "@/components/RecommendedBundles";
 import ProfileCard from "@/components/ProfileCard";
+import AnimatedFooter from "@/components/AnimatedFooter";
+
 
 const cards = [
   {
@@ -110,12 +112,14 @@ export default function HomePage() {
             scheduleUrl="/agendar" // opcional (acrescenta ?note=mensagem)
           />
         </div>
-        <RecommendedBundles emailTo="hello@teu-dominio.com" />
+        <RecommendedBundles selection={{ tag: "Destaque" }} />
+        
       </main>
-      {/* Conteúdo abaixo em branco */}
-      <main className="mx-auto max-w-6xl px-6 py-16">
-        {/* ... resto da página ... */}
-      </main>
+      
+      <AnimatedFooter
+          slogan="Ideias em pacote. Resultados sem stress."
+          subline="BUNDLR — Design & TechSolutions."
+        />
     </div>
   );
 }
