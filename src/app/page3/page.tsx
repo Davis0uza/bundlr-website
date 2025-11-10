@@ -35,7 +35,7 @@ export default function Page3() {
             >
               <span className="grid size-9 place-items-center rounded-xl border border-black/15 bg-white/70 group-hover:bg-white">
                 <Image
-                  src="/icons/form.svg"
+                  src="/icons/form.png"
                   alt=""
                   width={20}
                   height={20}
@@ -72,7 +72,7 @@ export default function Page3() {
             >
               <span className="grid size-9 place-items-center rounded-xl border border-black/15 bg-white/70 group-hover:bg-white">
                 <Image
-                  src="/icons/agendar.svg"
+                  src="/icons/agendar.png"
                   alt=""
                   width={20}
                   height={20}
