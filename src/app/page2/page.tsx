@@ -139,11 +139,14 @@ export default function Page() {
         ref={containerRef}
         className="
           h-[100svh] md:h-[100vh]
+          overflow-y-auto overscroll-y-contain
           touch-pan-y
           snap-y snap-mandatory
           scroll-smooth
           scroll-pt-20
+          [scrollbar-gutter:stable]
         "
+        style={{ WebkitOverflowScrolling: "touch" }}
       >
         {SERVICE_SECTIONS.map((s, i) => (
         <Section key={s.key} data={s} isLast={i === SERVICE_SECTIONS.length - 1} />
@@ -227,12 +230,8 @@ function Section({ data, isLast = false }: { data: ServiceSection; isLast?: bool
           </div>
 
           {/* Imagem (menor e à direita) */}
-          <div className="col-span-12 md:col-span-5 flex items-start justify-end overflow-hidden">
-            <div className={
-              theme === "web" 
-                ? "relative w-full max-w-[560px] sm:max-w-[720px] lg:max-w-[800px] aspect-[4/3]"
-                : "relative w-full max-w-[360px] sm:max-w-[420px] lg:max-w-[460px] aspect-[5/4]"
-            }>
+          <div className="col-span-12 md:col-span-5 flex items-start justify-end">
+            <div className="relative w-full max-w-[360px] sm:max-w-[420px] lg:max-w-[460px] aspect-[5/4]">
               <Image
                 src={data.image ?? `/icons/${theme}.png`}
                 alt={data.title}
