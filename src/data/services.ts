@@ -17,49 +17,59 @@ export const SERVICE_SECTIONS: ServiceSection[] = [
     key: "marketing",
     id: "section-marketing",
     title: "Marketing",
-    phrase: "Criamos conexão que converte.",
+    phrase: "Visiblidade é a chave para a era digital.",
     text:
-      "Planeamos e executamos campanhas orientadas a objetivos claros: alcance, tráfego e receita. "
-      + "Do conteúdo às automações, otimizamos continuamente com base em dados para crescer de forma sustentável.",
+      "Sem um uma presença forte nas plataformas, o teu negócio passa despercebido. Vamos pô-lo no mapa?",
     bullets: [
       "Estratégia e planeamento",
       "Gestão de redes sociais",
       "Performance e Ads",
       "Email marketing e automações",
+      "SEO e conteúdos",
+      "Motion Design",
+      "Edição de vídeo",
+      "Fotografia profissional",
     ],
-    image: "/icons/marketing.png",
+    image: "/images/marketingimage.png",
   },
   {
     key: "design",
     id: "section-design",
     title: "Design",
-    phrase: "Design com propósito, não só aparência.",
+    phrase: "Design forte, presença T-Rex.",
     text:
-      "Construímos identidades e sistemas visuais que tornam a comunicação clara e memorável. "
-      + "Do branding aos componentes de UI, garantimos consistência, acessibilidade e velocidade de produção.",
+      "De 8-bit a memorável: atualizamos a tua marca para dominar o feed.",
     bullets: [
       "Identidade visual e branding",
+      "Redesign de marcas",
       "UI/UX para web e mobile",
       "Design de peças e templates",
       "Guides e sistemas de design",
+      "Design Gráfico e publicidade",
+      "Estratégias de Marca",
+      "Moodboards e conceito visual",
     ],
-    image: "/icons/design.png",
+    image: "/images/designimage_Prancheta1.png",
   },
   {
     key: "web",
     id: "section-web",
     title: "Web",
-    phrase: "Sites rápidos, bonitos e fáceis de escalar.",
+    phrase: "Leva o teu negócio às alturas!",
     text:
-      "Desenvolvemos em Next.js/React com foco em performance, SEO técnico e DX. "
-      + "Integramos CMS headless e analytics para que o teu site seja fácil de manter e medir.",
+      "O nossos sites e estratégias são de outro mundo!",
     bullets: [
       "Websites Next.js/React",
       "Landing pages e SEO técnico",
       "Headless CMS (Sanity, Strapi)",
       "Integrações e automações",
+      "Design de Interfaces Web & Mobile (UX/UI)",
+      "Protótipos Navegáveis (Figma/Webflow)",
+      "Redesign de Sites",
+      "Integrações com Base de Dados e APIs",
+
     ],
-    image: "/icons/web.png",
+    image: "/images/webimage1.png",
   },
   {
     key: "ia",
@@ -72,10 +82,14 @@ export const SERVICE_SECTIONS: ServiceSection[] = [
     bullets: [
       "Assistentes e workflows de IA",
       "RAG e automação de conteúdos",
-      "Integração com APIs e dados",
+      "Automações N8N",
       "Dashboards e copilots internos",
+      "Chatbots para atendimento",
+      "Chatbot para reservas",
+      "Chatbots para faturação",
+      "ChatAssintent Pessoal",
     ],
-    image: "/icons/ia.png",
+    image: "/images/AIimage.png",
   },
   {
     key: "apps",
@@ -91,7 +105,7 @@ export const SERVICE_SECTIONS: ServiceSection[] = [
       "Publicação e analytics",
       "CICD e otimização de performance",
     ],
-    image: "/icons/apps.png",
+    image: "/images/appimage.png",
   },
 ] as const;
 

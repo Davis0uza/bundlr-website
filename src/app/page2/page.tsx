@@ -16,11 +16,11 @@ const RecommendedBundles = dynamic(() => import("@/components/RecommendedBundles
 /* ------------------------------------------------------------------ */
 /* Gradientes simples por secção (aplicados diretamente em cada <section>) */
 const GRADIENTS: Record<ThemeKey, [string, string]> = {
-  marketing: ["#f6fbff", "#ecf5ff"],
-  design: ["#ecf5ff", "#deedff"],
-  web: ["#deedff", "#fff2f6"],
-  ia: ["#fff2f6", "#ffeaf2"],
-  apps: ["#ffeaf2", "#ffdfe9"],
+  apps: ["#ecf5ff","#f6fbff"],
+  ia: ["#deedff","#ecf5ff"],
+  web: ["#fff2f6", "#deedff"],
+  design: [ "#ffeaf2", "#fff2f6"],
+  marketing: ["#ffe0e0", "#ffeaf2"],
 };
 /* ------------------------------------------------------------------ */
 

@@ -5,21 +5,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-// --- Types
+/* ------------------- Tipos ------------------- */
 export type ThemeKey = "marketing" | "design" | "web" | "ia" | "apps";
 
 export interface ServicesNavProps {
-  /** Qual secção está ativa neste momento */
   activeSection?: ThemeKey;
-  /** Navegar para uma secção específica (override ao comportamento default de scroll para #section-<key>) */
   onNavigate?: (key: ThemeKey) => void;
-  /** Disparado quando clicam em contactar */
   onContactClick?: () => void;
-  /** Classe extra opcional */
   className?: string;
 }
 
-// --- Config dos temas (ícone + rótulo)
+/* ------------------- Ícones ------------------- */
 const THEMES: Record<ThemeKey, { label: string; icon: string }> = {
   marketing: { label: "Marketing", icon: "/icons/marketing.png" },
   design: { label: "Design", icon: "/icons/design.png" },
@@ -28,9 +24,8 @@ const THEMES: Record<ThemeKey, { label: string; icon: string }> = {
   apps: { label: "Apps", icon: "/icons/apps.png" },
 };
 
-// Utilitário simples para concatenar classes
-function cn(...classes: Array<string | false | undefined>) {
-  return classes.filter(Boolean).join(" ");
+function cn(...cls: Array<string | false | undefined>) {
+  return cls.filter(Boolean).join(" ");
 }
 
 export default function ServicesNav({
@@ -39,141 +34,125 @@ export default function ServicesNav({
   onContactClick,
   className,
 }: ServicesNavProps) {
-  const [isContactHover, setIsContactHover] = useState(false);
+  const [hover, setHover] = useState(false);
+  const order = useMemo<ThemeKey[]>(() => ["marketing", "design", "web", "ia", "apps"], []);
 
-  // Ordenação fixa: Marketing, Design, Web, IA, Apps
-  const themeOrder = useMemo<ThemeKey[]>(
-    () => ["marketing", "design", "web", "ia", "apps"],
-    []
-  );
-
-  const handleNavigate = useCallback(
+  const go = useCallback(
     (key: ThemeKey) => {
-      // Dispara trigger público para que a página possa transitar o fundo (gradiente)
       if (typeof window !== "undefined") {
-        window.dispatchEvent(
-          new CustomEvent("theme-change", { detail: { theme: key } })
-        );
+        window.dispatchEvent(new CustomEvent("theme-change", { detail: { theme: key } }));
       }
+      if (onNavigate) return onNavigate(key);
 
-      if (onNavigate) {
-        onNavigate(key);
-        return;
-      }
-
-      // Comportamento default: scroll suave para a secção #section-<key>
       const el = document.getElementById(`section-${key}`);
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      el?.scrollIntoView({ behavior: "smooth", block: "start" });
     },
     [onNavigate]
   );
 
   return (
-    <nav
-      className={cn(
-        // Fundo translúcido e sticky
-        "w-full sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/55 bg-white/70",
-        "border-b border-black/5",
-        className
-      )}
-      aria-label="Navegação dos serviços"
-    >
-      {/* Grid em 3 colunas para manter o botão 100% centrado independentemente das larguras esquerda/direita */}
-      <div
+    <>
+      {/* NAV raiz (sem wrapper), sticky e com z bem alto */}
+      <nav
         className={cn(
-          "mx-auto max-w-7xl px-4 sm:px-6 lg:px-8",
-          "h-20 grid grid-cols-3 items-center"
+          "w-full sticky top-0 z-[999] isolate",
+          "backdrop-blur supports-[backdrop-filter]:bg-white/55 bg-white/70",
+          "border-b border-black/5",
+          className
         )}
+        aria-label="Navegação dos serviços"
       >
-        {/* Esquerda: ícones de secções */}
-        <div className="justify-self-start flex items-center gap-3 sm:gap-5">
-          {themeOrder.map((key) => {
-            const isActive = key === activeSection;
-            const { icon, label } = THEMES[key];
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-20 grid grid-cols-2 sm:grid-cols-3 items-center">
 
-            return (
-              <motion.button
-                key={key}
-                type="button"
-                onClick={() => handleNavigate(key)}
-                aria-label={label}
-                aria-current={isActive ? "page" : undefined}
-                className={cn(
-                  "relative overflow-hidden rounded-full bg-transparent",
-                  // contorno fino por defeito, ligeiramente mais espesso no ativo
-                  isActive ? "border-2" : "border",
-                  "border-black/70 hover:border-black",
-                  "transition-all duration-300",
-                  // Tamanhos variam com ativo e viewport
-                  isActive
-                    ? "w-[56px] h-[56px] sm:w-[60px] sm:h-[60px]"
-                    : "w-[44px] h-[44px] sm:w-[48px] sm:h-[48px]"
-                )}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <motion.div
-                  animate={isActive ? { scale: 1.02 } : { scale: 1 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                  className="flex h-full w-full items-center justify-center"
+          {/* Esquerda: ícones */}
+          <div className="justify-self-start flex items-center gap-3 sm:gap-5">
+            {order.map((key) => {
+              const isActive = key === activeSection;
+              const { icon, label } = THEMES[key];
+              return (
+                <motion.button
+                  key={key}
+                  type="button"
+                  onClick={() => go(key)}
+                  aria-label={label}
+                  aria-current={isActive ? "page" : undefined}
+                  className={cn(
+                    "relative overflow-hidden rounded-full",
+                    isActive ? "border-2" : "border",
+                    "border-black/70 hover:border-black transition-all duration-300",
+                    isActive
+                      ? "w-[56px] h-[56px] sm:w-[60px] sm:h-[60px]"
+                      : "w-[44px] h-[44px] sm:w-[48px] sm:h-[48px]"
+                  )}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <Image
-                    src={icon}
-                    alt={label}
-                    width={isActive ? 28 : 24}
-                    height={isActive ? 28 : 24}
-                    priority={isActive}
-                  />
-                </motion.div>
-                <span className="sr-only">{label}</span>
-              </motion.button>
-            );
-          })}
-        </div>
+                  <motion.div
+                    animate={isActive ? { scale: 1.02 } : { scale: 1 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                    className="flex h-full w-full items-center justify-center"
+                  >
+                    <Image src={icon} alt={label} width={isActive ? 28 : 24} height={isActive ? 28 : 24} priority={isActive} />
+                  </motion.div>
+                  <span className="sr-only">{label}</span>
+                </motion.button>
+              );
+            })}
+          </div>
 
-        {/* Centro: botão Contactar (sempre centrado na coluna 2) */}
-        <motion.button
-          type="button"
-          onMouseEnter={() => setIsContactHover(true)}
-          onMouseLeave={() => setIsContactHover(false)}
-          onClick={onContactClick}
-          className={cn(
-            "justify-self-center group relative inline-flex items-center gap-3",
-            "rounded-2xl border border-black/30 bg-transparent",
-            "px-4 sm:px-5 py-2.5 transition-colors duration-300",
-            isContactHover ? "bg-black/5" : "bg-transparent"
-          )}
-        >
-          <Image
-            src={
-              isContactHover ? "/icons/contactar.gif" : "/icons/contactar.png"
-            }
-            alt="Contactar"
-            width={20}
-            height={20}
-            className="shrink-0"
-          />
-          <span
-            className={cn(
-              "text-[15px] font-medium tracking-wide transition-colors",
-              isContactHover ? "text-[#e27fa3]" : "text-neutral-800"
-            )}
+          {/* Centro: LOGO */}
+         <Link
+            href="/"
+            aria-label="Página inicial"
+            className="justify-self-end sm:justify-self-center shrink-0 mr-3 sm:mr-0"
           >
-            Contactar
-          </span>
-        </motion.button>
+            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.98 }}>
+              <Image src="/logo.png" alt="Bundlr" width={112} height={28} />
+            </motion.div>
+          </Link>
 
-        {/* Direita: logo da Bundlr volta à home */}
+
+          {/* Direita: CONTACTAR (desktop) */}
+          <div className="justify-self-end hidden sm:block">
+            <Link
+              href="/page3"
+              onClick={onContactClick}
+              aria-label="Ir para a página de contacto"
+              className={cn(
+                "group inline-flex items-center gap-3 rounded-2xl border border-black/30",
+                "px-4 sm:px-5 py-2.5 transition-colors duration-300",
+                hover ? "bg-black/5" : "bg-transparent"
+              )}
+              onMouseEnter={() => setHover(true)}
+              onMouseLeave={() => setHover(false)}
+            >
+              <Image
+                src={hover ? "/icons/contactar.gif" : "/icons/contactar.png"}
+                alt=""
+                width={20}
+                height={20}
+                className="shrink-0"
+              />
+              <span className={cn("text-[15px] font-medium tracking-wide", hover ? "text-[#e27fa3]" : "text-neutral-800")}>
+                Contactar
+              </span>
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile: botão flutuante abaixo do logo (fora da NAV, não interfere com o snap/scroll da page2) */}
+      <div className="sm:hidden fixed top-[86px] right-4 z-[1000]">
         <Link
-          href="/"
-          aria-label="Voltar à página principal"
-          className="justify-self-end shrink-0"
+          href="/page3"
+          onClick={onContactClick}
+          className="group inline-flex items-center gap-3 rounded-2xl border border-black/30 bg-white/80 backdrop-blur px-4 py-2.5 shadow-sm"
+          aria-label="Ir para a página de contacto"
         >
-          <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.98 }}>
-            <Image src="/logo.png" alt="Bundlr" width={112} height={28} />
-          </motion.div>
+          <Image src="/icons/contactar.png" alt="" width={20} height={20} className="shrink-0" />
+          <span className="text-[15px] font-medium tracking-wide text-neutral-800">Contactar</span>
         </Link>
       </div>
-    </nav>
+    </>
   );
 }
