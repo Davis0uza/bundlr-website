@@ -13,7 +13,8 @@ const cards = [
   {
     // Card 1 — “Cyber Violet”
     name: "Consolidar",
-    title: "Realizamos uma análise de mercado e identificamos oportunidades de melhoria. A partir deste diagnóstico, entregamos um plano objetivo que vai ao encontro das suas especificas necessidades.",
+    title: "Análise de mercado • Auditoria técnica",
+    subtitle: "Realizamos uma análise de mercado e identificamos oportunidades de melhoria. A partir deste diagnóstico, entregamos um plano objetivo que vai ao encontro das suas especificas necessidades.",
     status: "Análise Completa",
     contactText: "Começar",
     avatarUrl: "/blank.png",
@@ -26,7 +27,8 @@ const cards = [
   {
     // Card 2 — “Sunset Peach”
     name: "Construir",
-    title: "Soluções digitais como websites, apps e automações com n8n e APIs integradas. O resultado final são ecossistemas digitais modernos e preparados para responder às necessidades do seu negócio.",
+    title: "Design systems • n8n + APIs",
+    subtitle: "Soluções digitais como websites, apps e automações com n8n e APIs integradas. O resultado final são ecossistemas digitais modernos e preparados para responder às necessidades do seu negócio.",
     status: "Produção Escalável",
     contactText: "Acompanhar",
     avatarUrl: "/blank.png",
@@ -39,7 +41,8 @@ const cards = [
   {
     // Card 3 — “Aqua Mint”
     name: "Crescer",
-    title: "Ajudamos na transformação da sua presença digital em resultados concretos, garantindo que a sua empresa ganha previsibilidade, escala e consistência na aquisição e retenção de clientes.",
+    title: "Campanhas • Conteúdo • Alojamento",
+    subtitle: "Ajudamos na transformação da sua presença digital em resultados concretos, garantindo que a sua empresa ganha previsibilidade, escala e consistência na aquisição e retenção de clientes.",
     status: "Otimização e Suporte",
     contactText: "Consultar",
     avatarUrl: "/blank.png",

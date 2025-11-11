@@ -131,7 +131,7 @@
   mask-mode: luminance;
   mask-repeat: repeat;
   mask-size: 150%;
-  mask-position: top calc(20% - (var(--background-y) * 5)) left calc(100% - var(--background-x));
+  mask-position: top calc(450% - (var(--background-y) * 5)) left calc(100% - var(--background-x));
   transition: filter 0.6s ease;
   filter: brightness(0.66) contrast(1.33) saturate(0.33) opacity(0.5);
   animation: holo-bg 18s linear infinite;
@@ -390,12 +390,24 @@
   flex-direction: column;
 }
 
+.pc-details h2 {
+  font-weight: 600;
+  margin: 0;
+  font-size: min(6svh, 3em);
+  margin: 0;
+  background-image: linear-gradient(to bottom, #cbcbcb, #ffffff);
+  background-size: 1em 1.5em;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
 .pc-details h3 {
   font-weight: 600;
   margin: 0;
-  font-size: min(7svh, 3em);
+  font-size: 17px;
   margin: 0;
-  background-image: linear-gradient(to bottom, #979797, #ffffff);
+  background-image: linear-gradient(to bottom, #e7e7e7, #ffffff);
   background-size: 1em 1.5em;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -405,7 +417,7 @@
 .pc-details p {
   font-weight: 600;
   position: relative;
-  top: 20px;
+  top: 150px;
   white-space: normal;
   text-align: justify;
   font-size: 15px;

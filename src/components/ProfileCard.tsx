@@ -17,6 +17,7 @@ interface ProfileCardProps {
   miniAvatarUrl?: string;
   name?: string;
   title?: string;
+  subtitle?: string;
   status?: string;
   contactText?: string;
   showUserInfo?: boolean;
@@ -59,6 +60,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   miniAvatarUrl,
   name = 'Javi A. Torres',
   title = 'Software Engineer',
+  subtitle = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   status = 'Online',
   contactText = 'Contact',
   showUserInfo = true,
@@ -327,8 +329,9 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
           </div>
           <div className="pc-content">
             <div className="pc-details">
-              <h3>{name}</h3>
-              <p>{title}</p>
+              <h2>{name}</h2>
+              <h3>{title}</h3>
+              <p>{subtitle}</p>
             </div>
           </div>
         </div>
