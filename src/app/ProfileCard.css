@@ -417,14 +417,14 @@
 .pc-details p {
   font-weight: 600;
   position: relative;
-  top: 150px;
+  top: 160px;
   white-space: normal;
-  text-align: justify;
+  text-align: left;
   font-size: 15px;
   margin: 0 auto;
   width: auto;
-  max-width: 65%;
-  background-image: linear-gradient(to bottom, #ccb0b0, #ffffff);
+  max-width: 75%;
+  background-image: linear-gradient(to bottom, #e7e7e7, #ffffff);
   background-size: 1em 1.5em;
   -webkit-text-fill-color: transparent;
   background-clip: text;

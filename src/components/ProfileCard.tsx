@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import '@/app/ProfileCard.css';
 
 interface ProfileCardProps {
@@ -68,6 +69,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
 }) => {
   const wrapRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const animationHandlers = useMemo(() => {
     if (!enableTilt) return null;
@@ -276,8 +278,11 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   );
 
   const handleContactClick = useCallback(() => {
+    // if a custom handler is passed, run it too
     onContactClick?.();
-  }, [onContactClick]);
+    // then navigate to /page3
+    router.push('/page3');
+  }, [onContactClick, router]);
 
   return (
     <div ref={wrapRef} className={`pc-card-wrapper ${className}`.trim()} style={cardStyle}>

@@ -48,7 +48,7 @@ const cards = [
     avatarUrl: "/blank.png",
     miniAvatarUrl: "/rocket.png",
     iconUrl: "/rocket.png",
-    innerGradient: "linear-gradient(145deg,#7cd688 0%,#7d7d7d 100%)",
+    innerGradient: "linear-gradient(145deg,#8093f1 0%,#7d7d7d 100%)",
     behindGradient:
       "radial-gradient(35% 52% at 55% 20%,#00ffaa80 0%,#0000 100%),radial-gradient(100% 100% at 50% 50%,#00c1ff66 1%,#0000 76%),conic-gradient(from 124deg at 50% 50%,#00c2a8 0%,#0ad1ff 50%,#00c2a8 100%)",
   },
