@@ -60,3 +60,10 @@ html, body {
 .cards-row .card {
   flex: 0 1 320px;    /* ~320px wide columns; adjust to your card width */
 }
+
+@media (max-width: 768px) {
+  .cards-grid {
+    margin-top: -10rem; /* adjust this value to push it more or less */
+  }
+}
+

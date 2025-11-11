@@ -95,7 +95,7 @@ export default function HomePage() {
         />
       </section>
       <main className="mx-auto max-w-6xl px-6 py-16">
-        <div className="grid gap-40 md:grid-cols-3 place-items-center -mt-12 md:-mt-66">
+        <div className="cards-grid grid gap-40 md:grid-cols-3 place-items-center -mt-12 md:-mt-66">
           {cards.map((c, i) => (
             <ProfileCard
               key={i}
