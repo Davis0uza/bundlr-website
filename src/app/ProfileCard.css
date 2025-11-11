@@ -99,12 +99,23 @@
   transform: translate3d(0, 0, 0.1px) rotateX(var(--rotate-y)) rotateY(var(--rotate-x));
 }
 
-.pc-card * {
+.pc-inside,
+.pc-shine,
+.pc-glare,
+.pc-content {
   display: grid;
   grid-area: 1/-1;
   border-radius: var(--card-radius);
   transform: translate3d(0, 0, 0.1px);
   pointer-events: none;
+}
+
+/* o conteúdo de texto NÃO precisa de border-radius nem de grid */
+.pc-details,
+.pc-details * {
+  border-radius: 0;
+  pointer-events: auto;
+  display: block; /* o h3 e o p voltam ao normal */
 }
 
 .pc-inside {
@@ -120,7 +131,7 @@
   mask-mode: luminance;
   mask-repeat: repeat;
   mask-size: 150%;
-  mask-position: top calc(200% - (var(--background-y) * 5)) left calc(100% - var(--background-x));
+  mask-position: top calc(20% - (var(--background-y) * 5)) left calc(100% - var(--background-x));
   transition: filter 0.6s ease;
   filter: brightness(0.66) contrast(1.33) saturate(0.33) opacity(0.5);
   animation: holo-bg 18s linear infinite;
@@ -382,7 +393,7 @@
 .pc-details h3 {
   font-weight: 600;
   margin: 0;
-  font-size: min(5svh, 3em);
+  font-size: min(7svh, 3em);
   margin: 0;
   background-image: linear-gradient(to bottom, #979797, #ffffff);
   background-size: 1em 1.5em;
@@ -394,11 +405,13 @@
 .pc-details p {
   font-weight: 600;
   position: relative;
-  top: -12px;
-  white-space: nowrap;
-  font-size: 16px;
+  top: 20px;
+  white-space: normal;
+  text-align: justify;
+  font-size: 15px;
   margin: 0 auto;
-  width: min-content;
+  width: auto;
+  max-width: 65%;
   background-image: linear-gradient(to bottom, #ccb0b0, #ffffff);
   background-size: 1em 1.5em;
   -webkit-text-fill-color: transparent;
