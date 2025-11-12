@@ -2,17 +2,22 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import ServicesNav from "@/components/ServicesNav";
+import ServicesNavPage3 from "@/components/ServicesNavPage3";
 import AnimatedFooter from "@/components/AnimatedFooter";
+import SmartComposer from "@/components/SmartComposer";
+
+// TODO: substitui pelos teus links de Google Forms
+const FORM_COMECAR = "https://forms.gle/SEU_FORM_COMECAR";
+const FORM_AGENDAR = "https://forms.gle/SEU_FORM_AGENDAR";
 
 export default function Page3() {
   return (
     <main className="min-h-screen bg-[#f5f7fb]">
       {/* NAV FIXA NO TOPO */}
-      <ServicesNav className="mb-10" />
+      <ServicesNavPage3 className="mb-10" />
 
       {/* CONTEÚDO */}
-      <div className="mx-auto max-w-4xl px-6 sm:px-8 pb-20">
+      <div className="mx-auto max-w-4xl px-6 sm:px-8 pb-28">
         {/* BLOCO 1 */}
         <section className="mb-16">
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900">
@@ -29,28 +34,32 @@ export default function Page3() {
           </p>
 
           <div className="mt-6">
+            {/* BOTÃO "COMEÇAR" */}
             <Link
-              href="#formulario"
-              className="group inline-flex items-center gap-3 rounded-2xl border border-black/10 bg-white/60 px-5 py-3 shadow-sm transition hover:bg-white"
+              href={FORM_COMECAR}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-3 rounded-2xl border border-black/10
+                        bg-gradient-to-br from-[#f7c7e7] via-[#e7d7ff] to-[#cfe7ff]
+                        px-6 py-3 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md"
             >
-              <span className="grid size-9 place-items-center rounded-xl border border-black/15 bg-white/70 group-hover:bg-white">
-                <Image
-                  src="/icons/form.png"
-                  alt=""
-                  width={20}
-                  height={20}
-                  aria-hidden
-                />
-              </span>
-              <span className="text-sm font-medium tracking-wide text-zinc-900">
+              <span className="text-sm font-semibold tracking-wide text-slate-800">
                 COMEÇAR
               </span>
+              <Image
+                src="/icons/form.svg"
+                alt=""
+                width={20}
+                height={20}
+                aria-hidden
+                className="transition-transform group-hover:translate-x-0.5"
+              />
             </Link>
           </div>
         </section>
 
         {/* BLOCO 2 */}
-        <section>
+        <section className="mb-16">
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900">
             Tem um projeto em mente mas não sabe como começar?
           </h2>
@@ -66,24 +75,38 @@ export default function Page3() {
           </p>
 
           <div className="mt-6">
+            {/* BOTÃO "AGENDAR" */}
             <Link
-              href="#agendar"
-              className="group inline-flex items-center gap-3 rounded-2xl border border-black/10 bg-white/60 px-5 py-3 shadow-sm transition hover:bg-white"
+              href={FORM_AGENDAR}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-3 rounded-2xl border border-black/10
+                        bg-gradient-to-br from-[#f7c7e7] via-[#e7d7ff] to-[#cfe7ff]
+                        px-6 py-3 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md"
             >
-              <span className="grid size-9 place-items-center rounded-xl border border-black/15 bg-white/70 group-hover:bg-white">
-                <Image
-                  src="/icons/agendar.png"
-                  alt=""
-                  width={20}
-                  height={20}
-                  aria-hidden
-                />
-              </span>
-              <span className="text-sm font-medium tracking-wide text-zinc-900">
+              <span className="text-sm font-semibold tracking-wide text-slate-800">
                 AGENDAR
               </span>
+              <Image
+                src="/icons/agendar.svg"
+                alt=""
+                width={20}
+                height={20}
+                aria-hidden
+                className="transition-transform group-hover:translate-x-0.5"
+              />
             </Link>
           </div>
+        </section>
+
+        {/* BLOCO 3 — SmartComposer */}
+        <section>
+          <h3 className="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-900">
+            Não encontrou o que procurava? Pergunte-nos diretamente.
+          </h3>
+
+          {/* Podes passar whatsappNumber / emailTo se quiseres sobrescrever os defaults */}
+          <SmartComposer className="mt-6" scheduleUrl="/page3" />
         </section>
       </div>
 

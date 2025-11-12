@@ -9,20 +9,22 @@ const robotoBold = Roboto({ weight: "800", subsets: ["latin"], display: "swap" }
 
 export type AnyIcon = ComponentType<{ className?: string; isHover?: boolean }>;
 
-// CircleNav.tsx (home)  — alterar apenas este array
-const services = [
-  { label: "MARKETING", Icon: (p) => <GifOnHover name="marketing" {...p} />, href: "/page2#section-marketing" },
-  { label: "DESIGN",    Icon: (p) => <GifOnHover name="design"    {...p} />, href: "/page2#section-design" },
-  { label: "WEB",       Icon: (p) => <GifOnHover name="web"       {...p} />, href: "/page2#section-web" },
-  { label: "IA",        Icon: (p) => <GifOnHover name="ia"        {...p} />, href: "/page2#section-ia" },
-  { label: "APPS",      Icon: (p) => <GifOnHover name="apps"      {...p} />, href: "/page2#section-apps" },
-  // CONTACTAR agora aponta para uma rota (a criar) em vez de mailto
-  { label: "CONTACTAR", Icon: (p) => <GifOnHover name="contactar" {...p} />, href: "/contactar" },
+// Tipar o array + tipar o parâmetro `p` elimina o TS7006
+type IconProps = { className?: string; isHover?: boolean };
+const services: Array<{ label: string; Icon: AnyIcon; href: string }> = [
+  { label: "MARKETING", Icon: (p: IconProps) => <GifOnHover name="marketing" {...p} />, href: "/page2#section-marketing" },
+  { label: "DESIGN",    Icon: (p: IconProps) => <GifOnHover name="design"    {...p} />, href: "/page2#section-design" },
+  { label: "WEB",       Icon: (p: IconProps) => <GifOnHover name="web"       {...p} />, href: "/page2#section-web" },
+  { label: "IA",        Icon: (p: IconProps) => <GifOnHover name="ia"        {...p} />, href: "/page2#section-ia" },
+  { label: "APPS",      Icon: (p: IconProps) => <GifOnHover name="apps"      {...p} />, href: "/page2#section-apps" },
+  { label: "CONTACTAR", Icon: (p: IconProps) => <GifOnHover name="contactar" {...p} />, href: "/page3" },
+
 ];
 
 export default function CircleNav() {
   return (
-    <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-7 md:gap-9">
+    // Mobile + iPad: grid 3x3; Desktop: volta a layout “livre” com flex
+    <div className="mx-auto grid max-w-6xl grid-cols-3 md:grid-cols-6 place-items-center gap-5 md:gap-6 lg:gap-7 xl:gap-9">
       {services.map(({ label, Icon, href }, i) => (
         <Circle key={label} Icon={Icon} href={href} label={label} delay={i * 0.05} />
       ))}
@@ -72,7 +74,7 @@ function Circle({
     glowCtl.start({ opacity: 0, transition: { duration: 0.22 } });
     iconCtl.start({ color: BLUE_ICON, transition: { duration: 0.22 } });
   };
-  
+
   const uid = useId();
   const baseGradId = `base-${uid}`;
   const hoverGradId = `hover-${uid}`;
@@ -93,7 +95,6 @@ function Circle({
       onMouseLeave={handleLeave}
       onFocus={handleEnter}
       onBlur={handleLeave}
-      // Sem onClick: o link navega imediatamente sem esperar animação
     >
       <motion.div
         role="button"
@@ -101,7 +102,8 @@ function Circle({
         variants={variants}
         initial="rest"
         animate={shell}
-        className="relative origin-top flex h-28 w-28 items-center justify-center md:h-32 md:w-32 will-change-transform"
+        // Menor em mobile e iPad; cresce só a partir de lg (desktop)
+        className="relative origin-top flex h-24 w-24 items-center justify-center md:h-24 md:w-24 lg:h-32 lg:w-32 will-change-transform"
       >
         <svg
           className="absolute inset-0"
@@ -168,10 +170,10 @@ function Circle({
             style={{ color: BLUE_ICON }}
             className="transition-transform duration-200 group-hover:scale-110"
           >
-            <Icon className="h-8 w-8 md:h-10 md:w-10" isHover={isHover} />
+            <Icon className="h-7 w-7 md:h-7 md:w-7 lg:h-10 lg:w-10" isHover={isHover} />
           </motion.div>
           <motion.span
-            className={`${robotoBold.className} mt-2 text-[11px] tracking-wide md:text-[12px]`}
+            className={`${robotoBold.className} mt-2 text-[10px] tracking-wide md:text-[10px] lg:text-[12px]`}
             animate={iconCtl}
             style={{ color: BLUE_ICON }}
           >
@@ -183,12 +185,6 @@ function Circle({
   );
 }
 
-/**
- * Ícone que troca entre PNG estático e GIF animado.
- * - Toca a animação (GIF) quando o botão está em hover (isHover=true).
- * - Volta ao PNG quando o hover termina.
- * - Usa cache-buster para reiniciar o GIF sempre.
- */
 function GifOnHover({
   name,
   alt = "",
@@ -206,7 +202,7 @@ function GifOnHover({
 
   useEffect(() => {
     if (isHover) {
-      setSrc(`${gif}?t=${Date.now()}`); // reinicia sempre que entra em hover
+      setSrc(`${gif}?t=${Date.now()}`);
     } else {
       setSrc(still);
     }
@@ -216,7 +212,7 @@ function GifOnHover({
     <img
       src={src}
       alt={alt}
-      className={`h-8 w-8 md:h-10 md:w-10 select-none ${className}`}
+      className={`h-7 w-7 md:h-7 md:w-7 lg:h-10 lg:w-10 select-none ${className}`}
       draggable={false}
       aria-hidden={alt === ""}
     />

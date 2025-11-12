@@ -1,23 +1,7 @@
 "use client";
 
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import React, { useMemo, useRef } from "react";
-
-// ChatFAQ — FAQ em formato de conversa
-// - Perguntas (cliente) à DIREITA em azul.
-// - Respostas (nossa equipa) à ESQUERDA em azul claro/lilás.
-// - As frases animam letra-a-letra com efeito de "queda".
-// - A animação só arranca quando o bloco entra no viewport (scroll).
-// - Sem dependências extra além de framer-motion e tailwind.
-//
-// Uso:
-//   import ChatFAQ from "@/components/ChatFAQ";
-//   ...
-//   <ChatFAQ />
-//
-// Personalização:
-//   • Altere o array "items" para adaptar perguntas/respostas.
-//   • Pode também passar uma prop items se quiser controlar fora do componente.
+import React, { useRef } from "react";
 
 export type ChatItem = {
   role: "client" | "team"; // client => direita | team => esquerda
@@ -27,7 +11,7 @@ export type ChatItem = {
 export default function ChatFAQ({ items: itemsProp }: { items?: ChatItem[] }) {
   const items = itemsProp ?? defaultItems;
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const inView = useInView(rootRef, { once: true, amount: 0.25 });
+  useInView(rootRef, { once: true, amount: 0.25 }); // mantém, caso uses no futuro
 
   return (
     <section
@@ -50,9 +34,8 @@ export default function ChatFAQ({ items: itemsProp }: { items?: ChatItem[] }) {
             key={i}
             align={m.role === "client" ? "right" : "left"}
             delay={i * 0.05}
-          >
-            <FallingText text={m.text} />
-          </ChatBubble>
+            text={m.text}
+          />
         ))}
       </div>
     </section>
@@ -60,35 +43,35 @@ export default function ChatFAQ({ items: itemsProp }: { items?: ChatItem[] }) {
 }
 
 function ChatBubble({
-  children,
   align,
   delay = 0,
+  text,
 }: {
-  children: React.ReactElement<{ active?: boolean }>;
   align: "left" | "right";
   delay?: number;
+  text: string;
 }) {
   const isRight = align === "right";
   const bg = isRight
     ? "bg-[linear-gradient(135deg,#bfe5ff_0%,#d7efff_100%)]"
-    : "bg-[linear-gradient(135deg,#efd1f4_0%,#cfe0ff_100%)]"; // lilás→azul claro
+    : "bg-[linear-gradient(135deg,#efd1f4_0%,#cfe0ff_100%)]";
   const tailColor = isRight ? "#d7efff" : "#dcd9ff";
 
   // Cada bolha controla o seu próprio inView
   const bubbleRef = React.useRef<HTMLDivElement | null>(null);
   const bubbleInView = useInView(bubbleRef, { once: true, amount: 0.6 });
 
-  const content = React.isValidElement(children)
-    ? React.cloneElement(children, { active: bubbleInView })
-    : children;
+  // Timings: bolha entra (x) e só depois o texto sobe
+  const bubbleTransition = { delay, type: "spring", stiffness: 220, damping: 22 };
+  const textDelayAfterBubble = delay + 0.18;
 
   return (
     <motion.div
       ref={bubbleRef}
-      initial={{ opacity: 0, y: 14, scale: 0.98 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, x: isRight ? 24 : -24, scale: 0.98 }}
+      whileInView={{ opacity: 1, x: 0, scale: 1 }}
       viewport={{ once: true, amount: 0.6 }}
-      transition={{ delay, type: "spring", stiffness: 180, damping: 18 }}
+      transition={{ delay, type: "spring" as const, stiffness: 220, damping: 22 }}
       className={[
         "relative flex max-w-[85%] items-end gap-3 md:max-w-[70%]",
         isRight ? "ml-auto justify-end" : "mr-auto",
@@ -96,20 +79,20 @@ function ChatBubble({
     >
       {!isRight && (
         <div className="hidden shrink-0 select-none md:block">
-          <Avatar label="Bundlr" color="#8b7bd1"/>
+          <Avatar label="Bundlr" color="#8b7bd1" />
         </div>
       )}
 
       <div
         className={[
-          // Aumentei tamanho da letra e line-height; tracking subtil e word-break seguro
           "relative rounded-2xl px-4 py-3 text-[16px] md:text-[18px] leading-7 md:leading-8 tracking-[0.01em] break-words",
           "ring-1 ring-black/5 shadow-sm",
           bg,
           isRight ? "rounded-br-sm" : "rounded-bl-sm",
         ].join(" ")}
       >
-        {content}
+        <SmoothRevealText text={text} active={bubbleInView} delay={textDelayAfterBubble} />
+
         <span
           aria-hidden
           className="pointer-events-none absolute bottom-2 h-3 w-3 rotate-45"
@@ -143,11 +126,20 @@ function Avatar({ label, color }: { label: string; color: string }) {
   );
 }
 
-// Texto que cai letra-a-letra. Respeita prefers-reduced-motion.
-function FallingText({ text, active = false }: { text: string; active?: boolean }) {
+/**
+ * Texto que aparece de uma vez, de baixo para cima.
+ * Respeita prefers-reduced-motion (sem animação).
+ */
+function SmoothRevealText({
+  text,
+  active = false,
+  delay = 0,
+}: {
+  text: string;
+  active?: boolean;
+  delay?: number;
+}) {
   const reduce = useReducedMotion();
-  const words = useMemo(() => text.split(' '), [text]);
-
   if (reduce) return <span className="whitespace-pre-wrap">{text}</span>;
 
   return (
@@ -155,45 +147,11 @@ function FallingText({ text, active = false }: { text: string; active?: boolean 
       role="text"
       aria-label={text}
       className="inline-block whitespace-pre-wrap"
-      initial="hidden"
-      animate={active ? "show" : "hidden"}
-      variants={{
-        hidden: {},
-        show: {
-          transition: {
-            staggerChildren: 0.02,
-            delayChildren: 0.05,
-          },
-        },
-      }}
+      initial={{ opacity: 0, y: 12, filter: "blur(2px)" }}
+      animate={active ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 0, y: 12 }}
+      transition={{ delay, type: "spring", stiffness: 240, damping: 26 }}
     >
-      {words.map((w, wi) => (
-        <motion.span
-          key={wi}
-          className="inline-block whitespace-nowrap"
-          variants={{ show: { transition: { staggerChildren: 0.02 } } }}
-        >
-          {[...w].map((c, ci) => (
-            <motion.span
-              key={ci}
-              className="inline-block will-change-transform"
-              variants={{
-                hidden: { opacity: 0, y: -12, rotate: -4, filter: "blur(2px)" },
-                show: {
-                  opacity: 1,
-                  y: 0,
-                  rotate: 0,
-                  filter: "blur(0px)",
-                  transition: { type: "spring", stiffness: 400, damping: 26 },
-                },
-              }}
-            >
-              {c}
-            </motion.span>
-          ))}
-          {wi < words.length - 1 ? <span>&nbsp;</span> : null}
-        </motion.span>
-      ))}
+      {text}
     </motion.span>
   );
 }
@@ -217,7 +175,7 @@ const defaultItems: ChatItem[] = [
   {
     role: "team",
     text:
-      "Fazemos auditoria UX/SEO, otimizamos performance e implementamos e‑commerce com Stripe/Mollie/PayPal e faturação (ex.: InvoiceXpress).",
+      "Fazemos auditoria UX/SEO, otimizamos performance e implementamos e-commerce com Stripe/Mollie/PayPal e faturação (ex.: InvoiceXpress).",
   },
   {
     role: "client",
@@ -238,3 +196,4 @@ const defaultItems: ChatItem[] = [
       "Sim — prototipagem em Figma, backlog claro e desenvolvimento ágil (web/app). Login social, pagamentos e analytics desde o início.",
   },
 ];
+  

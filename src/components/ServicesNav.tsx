@@ -29,7 +29,7 @@ function cn(...cls: Array<string | false | undefined>) {
 }
 
 export default function ServicesNav({
-  activeSection = "marketing",
+  activeSection,
   onNavigate,
   onContactClick,
   className,
@@ -50,9 +50,8 @@ export default function ServicesNav({
     [onNavigate]
   );
 
-  return (
+   return (
     <>
-      {/* NAV raiz (sem wrapper), sticky e com z bem alto */}
       <nav
         className={cn(
           "w-full sticky top-0 z-[999] isolate",
@@ -62,57 +61,69 @@ export default function ServicesNav({
         )}
         aria-label="Navegação dos serviços"
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-20 grid grid-cols-2 sm:grid-cols-3 items-center">
+        {/* 2 colunas no mobile; no iPad/desktop usa 3 colunas com centro auto,
+            para garantir o logo SEM sobrepor os lados */}
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-20 grid grid-cols-2 sm:grid-cols-[auto_1fr_auto] items-center">
 
           {/* Esquerda: ícones */}
-          <div className="justify-self-start flex items-center gap-3 sm:gap-5">
-            {order.map((key) => {
-              const isActive = key === activeSection;
-              const { icon, label } = THEMES[key];
-              return (
-                <motion.button
-                  key={key}
-                  type="button"
-                  onClick={() => go(key)}
-                  aria-label={label}
-                  aria-current={isActive ? "page" : undefined}
-                  className={cn(
-                    "relative overflow-hidden rounded-full",
-                    isActive ? "border-2" : "border",
-                    "border-black/70 hover:border-black transition-all duration-300",
-                    isActive
-                      ? "w-[56px] h-[56px] sm:w-[60px] sm:h-[60px]"
-                      : "w-[44px] h-[44px] sm:w-[48px] sm:h-[48px]"
-                  )}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
+          <div className="justify-self-start flex items-center gap-2 sm:gap-4">
+          {order.map((key) => {
+            const isActive = key === activeSection;
+            const { icon, label } = THEMES[key];
+            return (
+              <motion.button
+                key={key}
+                type="button"
+                onClick={() => go(key)}
+                aria-label={label}
+                aria-current={isActive ? "page" : undefined}
+                className={cn(
+                  "relative overflow-hidden rounded-full",
+                  isActive ? "border-2" : "border",
+                  "border-black/70 hover:border-black transition-all duration-300",
+                  // tamanhos mais contidos no mobile
+                  isActive
+                    ? "w-[52px] h-[52px] sm:w-[58px] sm:h-[58px]"
+                    : "w-[40px] h-[40px] sm:w-[46px] sm:h-[46px]"
+                )}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <motion.div
+                  animate={isActive ? { scale: 1.02 } : { scale: 1 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                  className="flex h-full w-full items-center justify-center"
                 >
-                  <motion.div
-                    animate={isActive ? { scale: 1.02 } : { scale: 1 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                    className="flex h-full w-full items-center justify-center"
-                  >
-                    <Image src={icon} alt={label} width={isActive ? 28 : 24} height={isActive ? 28 : 24} priority={isActive} />
-                  </motion.div>
-                  <span className="sr-only">{label}</span>
-                </motion.button>
-              );
-            })}
-          </div>
+                  <Image
+                    src={icon}
+                    alt={label}
+                    width={isActive ? 26 : 22}
+                    height={isActive ? 26 : 22}
+                    priority={isActive}
+                  />
+                </motion.div>
+                <span className="sr-only">{label}</span>
+              </motion.button>
+            );
+          })}
+        </div>
 
           {/* Centro: LOGO */}
-         <Link
-            href="/"
-            aria-label="Página inicial"
-            className="justify-self-end sm:justify-self-center shrink-0 mr-3 sm:mr-0"
-          >
+          {/* Mobile: apenas o símbolo (log.svg), à direita da fila de ícones */}
+          <Link href="/" aria-label="Página inicial" className="justify-self-end sm:hidden shrink-0 mr-2">
+            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.98 }}>
+              <Image src="/log.svg" alt="Bundlr" width={28} height={28} />
+            </motion.div>
+          </Link>
+
+          {/* iPad/desktop: logo completo centrado e sem sobrepor */}
+          <Link href="/" aria-label="Página inicial" className="hidden sm:block justify-self-center shrink-0">
             <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.98 }}>
               <Image src="/logo.png" alt="Bundlr" width={112} height={28} />
             </motion.div>
           </Link>
 
-
-          {/* Direita: CONTACTAR (desktop) */}
+          {/* Direita: CONTACTAR (iPad/desktop) */}
           <div className="justify-self-end hidden sm:block">
             <Link
               href="/page3"
@@ -141,7 +152,7 @@ export default function ServicesNav({
         </div>
       </nav>
 
-      {/* Mobile: botão flutuante abaixo do logo (fora da NAV, não interfere com o snap/scroll da page2) */}
+      {/* Mobile: botão flutuante de contactar mantém-se */}
       <div className="sm:hidden fixed top-[86px] right-4 z-[1000]">
         <Link
           href="/page3"
