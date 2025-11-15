@@ -82,7 +82,7 @@ export default function HomePage() {
       </section>
 
       {/* TRANSIÇÃO (invertida, desvanece para branco) */}
-      <section className="relative h-[260px] -mt-px">
+      <section className="relative h-[160px] -mt-px">
         <AnimatedWavesLite
           invert
           layers={10}
@@ -94,8 +94,8 @@ export default function HomePage() {
           fadeSize={220}
         />
       </section>
-      <main className="mx-auto max-w-6xl px-6 py-16">
-        <div className="cards-grid grid gap-40 md:grid-cols-3 place-items-center -mt-12 md:-mt-66">
+      <main className="mx-auto max-w-6xl px-6 py-2"> {/* Reduced py-16 to py-8 */}
+        <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-3 xl:grid-cols-3 place-items-center -mt-24"> {/* Reduced gap-10 to gap-8 and increased -mt-12 to -mt-24 */}
           {cards.map((c, i) => (
             <ProfileCard
               key={i}

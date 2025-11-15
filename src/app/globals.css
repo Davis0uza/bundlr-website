@@ -48,22 +48,3 @@ body {
 html, body {
   background: #f5f7fb;
 }
-
-.cards-row {
-  display: flex;
-  gap: 24px;          /* space between cards */
-  flex-wrap: wrap;    /* wrap on small screens */
-  justify-content: center; /* or flex-start */
-}
-
-/* make each card a fixed-ish column so they line up horizontally */
-.cards-row .card {
-  flex: 0 1 320px;    /* ~320px wide columns; adjust to your card width */
-}
-
-@media (max-width: 768px) {
-  .cards-grid {
-    margin-top: -10rem; /* adjust this value to push it more or less */
-  }
-}
-
