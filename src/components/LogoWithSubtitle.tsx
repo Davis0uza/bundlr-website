@@ -230,9 +230,9 @@ export default function LogoWithSubtitle() {
           className="inline-block leading-snug text-[clamp(14px,3.33vw,21px)] sm:text-[clamp(15px,2.53vw,24px)]"
           style={{ letterSpacing: "0.1px" }}
         >
-          O CONJUNTO DE SOLUÇÕES PARA IMPOLSIONAR O SEU NEGOÇIO.
+          O CONJUNTO DE SOLUÇÕES PARA IMPULSIONAR O SEU NEGÓCIO.
           <br className="hidden sm:block" />
-          DOBRE O LIMITE DA SUA IMAGINAÇÃO.
+          
         </span>
       </p>
     </div>

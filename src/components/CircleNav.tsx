@@ -12,12 +12,12 @@ export type AnyIcon = ComponentType<{ className?: string; isHover?: boolean }>;
 // Tipar o array + tipar o parâmetro `p` elimina o TS7006
 type IconProps = { className?: string; isHover?: boolean };
 const services: Array<{ label: string; Icon: AnyIcon; href: string }> = [
-  { label: "MARKETING", Icon: (p: IconProps) => <GifOnHover name="marketing" {...p} />, href: "/page2#section-marketing" },
-  { label: "DESIGN",    Icon: (p: IconProps) => <GifOnHover name="design"    {...p} />, href: "/page2#section-design" },
-  { label: "WEB",       Icon: (p: IconProps) => <GifOnHover name="web"       {...p} />, href: "/page2#section-web" },
-  { label: "IA",        Icon: (p: IconProps) => <GifOnHover name="ia"        {...p} />, href: "/page2#section-ia" },
-  { label: "APPS",      Icon: (p: IconProps) => <GifOnHover name="apps"      {...p} />, href: "/page2#section-apps" },
-  { label: "CONTACTAR", Icon: (p: IconProps) => <GifOnHover name="contactar" {...p} />, href: "/page3" },
+  { label: "MARKETING", Icon: (p: IconProps) => <GifOnHover name="marketing" {...p} />, href: "/services#section-marketing" },
+  { label: "DESIGN",    Icon: (p: IconProps) => <GifOnHover name="design"    {...p} />, href: "/services#section-design" },
+  { label: "WEB",       Icon: (p: IconProps) => <GifOnHover name="web"       {...p} />, href: "/services#section-web" },
+  { label: "IA",        Icon: (p: IconProps) => <GifOnHover name="ia"        {...p} />, href: "/services#section-ia" },
+  { label: "APPS",      Icon: (p: IconProps) => <GifOnHover name="apps"      {...p} />, href: "/services#section-apps" },
+  { label: "CONTACTAR", Icon: (p: IconProps) => <GifOnHover name="contactar" {...p} />, href: "/contact" },
 
 ];
 

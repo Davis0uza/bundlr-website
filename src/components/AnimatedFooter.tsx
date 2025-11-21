@@ -19,17 +19,17 @@ export default function AnimatedFooter({
   showWaves = true,
 }: AnimatedFooterProps) {
   const areas = [
-    { label: "Marketing", href: "/marketing" },
-    { label: "Design", href: "/design" },
-    { label: "Web", href: "/web" },
-    { label: "IA", href: "/ia" },
-    { label: "Apps", href: "/apps" },
+    { label: "Marketing", href: "/services#section-marketing" },
+    { label: "Design", href: "/services#section-design" },
+    { label: "Web", href: "/services#section-web" },
+    { label: "IA", href: "/services#section-ia" },
+    { label: "Apps", href: "/services#section-apps" },
   ];
 
   const socials = [
-    { label: "Instagram", href: "/instagram" },
-    { label: "WhatsApp", href: "/whatsapp" },
-    { label: "Agendar Chamada", href: "/agendar-chamada" },
+    { label: "Instagram", href: "https://www.instagram.com/bundlr.solutions" },
+    { label: "WhatsApp", href: "https://wa.me/351968939957" },
+    { label: "Agendar Chamada", href: "/contact" },
   ];
 
   return (

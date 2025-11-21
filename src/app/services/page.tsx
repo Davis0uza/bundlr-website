@@ -245,7 +245,7 @@ function Section({ data, isLast = false }: { data: ServiceSection; isLast?: bool
           {/* Bundles + “respiro” extra (só nas que NÃO são marketing) */}
           <div className="col-span-12">
             <div className="mt-2">
-              <RecommendedBundles tags={[tagForBundles]} />
+              <RecommendedBundles selection={{ tag: tagForBundles }} />
             </div>
             {!isMarketing && <div className="h-10 md:h-16" />} {/* espaço extra pós-bundles */}
           </div>
