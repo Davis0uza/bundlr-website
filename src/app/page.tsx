@@ -111,8 +111,8 @@ export default function HomePage() {
         <div className="mt-0">
           <SmartComposer
             whatsappNumber="351912345678" // opcional: sem o '+'
-            emailTo="hello@teu-dominio.com" // opcional
-            scheduleUrl="/agendar" // opcional (acrescenta ?note=mensagem)
+            emailTo="bundlr.solutions@gmail.com" // opcional
+            scheduleUrl="/contact" // opcional (acrescenta ?note=mensagem)
           />
         </div>
         <RecommendedBundles selection={{ tag: "Destaque" }} />

@@ -48,3 +48,7 @@ body {
 html, body {
   background: #f5f7fb;
 }
+
+.smart-composer textarea {
+  color: #0b1220;      /* texto preto/azulado, igual ao resto do componente */
+}

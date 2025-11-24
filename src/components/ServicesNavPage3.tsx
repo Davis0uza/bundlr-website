@@ -45,7 +45,7 @@ export default function ServicesNavPage3({
         "border-b border-black/5",
         className
       )}
-      aria-label="Navegação dos serviços (page3)"
+      aria-label="Navegação dos serviços"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-20 grid grid-cols-2 sm:grid-cols-[auto_1fr_auto] items-center">
         {/* Esquerda: ícones que linkam para a page2 */}
@@ -53,7 +53,7 @@ export default function ServicesNavPage3({
           {order.map((key) => {
             const isActive = key === activeSection;
             const { icon, label } = THEMES[key];
-            const href = `/page2#section-${key}`; // ids da page2: section-marketing/design/web/ia/apps
+            const href = `/services#section-${key}`; // ids da page2: section-marketing/design/web/ia/apps
 
             return (
               <Link key={key} href={href} aria-label={`${label} em page 2`}>

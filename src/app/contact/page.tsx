@@ -7,8 +7,8 @@ import AnimatedFooter from "@/components/AnimatedFooter";
 import SmartComposer from "@/components/SmartComposer";
 
 // TODO: substitui pelos teus links de Google Forms
-const FORM_COMECAR = "https://forms.gle/SEU_FORM_COMECAR";
-const FORM_AGENDAR = "https://forms.gle/SEU_FORM_AGENDAR";
+const FORM_COMECAR = "https://docs.google.com/forms/d/e/1FAIpQLSdbCNPIjxGAY4O-bBJf1WEf61dIW_r2b8i6UJTQmdV32_fK0g/viewform?usp=header";
+const FORM_AGENDAR = "https://docs.google.com/forms/d/e/1FAIpQLSe68HTg1Db4NBW4xiIHdzchFDPNoz68QNiKWM81Tdx6V03bTg/viewform?usp=header";
 
 export default function Page3() {
   return (
@@ -106,7 +106,13 @@ export default function Page3() {
           </h3>
 
           {/* Podes passar whatsappNumber / emailTo se quiseres sobrescrever os defaults */}
-          <SmartComposer className="mt-6" scheduleUrl="/page3" />
+             <div className="mt-6">
+                      <SmartComposer
+                        whatsappNumber="351912345678" // opcional: sem o '+'
+                        emailTo="bundlr.solutions@gmail.com" // opcional
+                        scheduleUrl="/contact" // opcional (acrescenta ?note=mensagem)
+                      />
+              </div>
         </section>
       </div>
 

@@ -126,7 +126,7 @@ export default function ServicesNav({
           {/* Direita: CONTACTAR (iPad/desktop) */}
           <div className="justify-self-end hidden sm:block">
             <Link
-              href="/page3"
+              href="/contact"
               onClick={onContactClick}
               aria-label="Ir para a página de contacto"
               className={cn(

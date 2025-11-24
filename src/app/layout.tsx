@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bundlr",
+  title: "Bundlr | Design e Informática",
   description: "Group of Design and TechSolutions",
 };
 
