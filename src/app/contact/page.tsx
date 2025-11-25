@@ -47,7 +47,7 @@ export default function Page3() {
                 COMEÇAR
               </span>
               <Image
-                src="/icons/form.svg"
+                src="/Icons/form.svg"
                 alt=""
                 width={20}
                 height={20}
@@ -88,7 +88,7 @@ export default function Page3() {
                 AGENDAR
               </span>
               <Image
-                src="/icons/agendar.svg"
+                src="/Icons/agendar.svg"
                 alt=""
                 width={20}
                 height={20}

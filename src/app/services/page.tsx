@@ -160,7 +160,7 @@ export default function Page() {
     return () => io.disconnect();
   }, [active]);
 
-  // Faz scroll dentro do container principal para uma secção específica
+      // Faz scroll dentro do container para uma secção específica (sem snap nem smooth)
   const scrollToSection = (id: string) => {
     const root = containerRef.current;
     if (!root) return;
@@ -168,39 +168,34 @@ export default function Page() {
     const el = document.getElementById(id);
     if (!el) return;
 
-    // Desativa scroll-snap temporariamente para não “puxar” para a secção errada
-    const prevSnap = root.style.scrollSnapType;
-    root.style.scrollSnapType = "none";
-
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
-
-    // Volta a ativar o snap depois do scroll (tempo aproximado da animação)
-    window.setTimeout(() => {
-      root.style.scrollSnapType = prevSnap;
-    }, 700);
+    // Scroll normal
+    el.scrollIntoView({ behavior: "auto", block: "start" });
   };
 
-
-    // Quando a page abre (ou o hash muda), garantir que scrolla para a secção certa
-    // Quando a page abre (ou o hash muda), garantir que scrolla para a secção certa
+      // Quando a page abre (ou o hash muda de verdade), scroll normal para a secção
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const handleHashChange = () => {
+    const scrollByHash = () => {
       const { hash } = window.location;
       if (!hash) return;
+
       const id = hash.slice(1); // "#section-web" -> "section-web"
-      scrollToSection(id);
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      el.scrollIntoView({ behavior: "auto", block: "start" });
     };
 
     // Ao entrar em /services#section-...
-    // Pequeno timeout dá tempo para o layout inicial estabilizar
-    setTimeout(handleHashChange, 0);
+    scrollByHash();
 
-    // Se o hash mudar já dentro da página
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
-  }, [scrollToSection]);
+    // Se o hash mudar já dentro da página (ex: link anchor interno)
+    window.addEventListener("hashchange", scrollByHash);
+    return () => window.removeEventListener("hashchange", scrollByHash);
+  }, []);
+
+
 
 
 
@@ -229,13 +224,11 @@ export default function Page() {
           h-[100svh] md:h-[100vh]
           overflow-y-auto overscroll-y-contain
           touch-pan-y
-          snap-y snap-mandatory
-          scroll-smooth
           scroll-pt-20
           [scrollbar-gutter:stable]
         "
-        style={{ WebkitOverflowScrolling: "touch" }}
       >
+
         {SERVICE_SECTIONS.map((s, i) => (
         <Section key={s.key} data={s} isLast={i === SERVICE_SECTIONS.length - 1} />
         ))}
@@ -258,7 +251,7 @@ function Section({ data, isLast = false }: { data: ServiceSection; isLast?: bool
     <section
       id={data.id}
       data-key={theme}
-      className="snap-start snap-always min-h-[100svh] md:min-h-[100vh] flex items-stretch"
+      className="min-h-[100svh] md:min-h-[100vh] flex items-stretch"
       style={{ backgroundImage: `linear-gradient(160deg, ${c1} 0%, ${c2} 100%)` }}
     >
       {/* Topo e fundo com padding ajustado por secção */}
@@ -321,7 +314,7 @@ function Section({ data, isLast = false }: { data: ServiceSection; isLast?: bool
           <div className="col-span-12 md:col-span-5 flex items-start justify-end">
             <div className="relative w-full max-w-[360px] sm:max-w-[420px] lg:max-w-[460px] aspect-[5/4]">
               <Image
-                src={data.image ?? `/icons/${theme}.png`}
+                src={data.image ?? `/Icons/${theme}.png`}
                 alt={data.title}
                 fill
                 className="object-contain drop-shadow-sm"

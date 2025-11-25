@@ -17,11 +17,11 @@ export interface ServicesNavProps {
 
 /* ------------------- Ícones ------------------- */
 const THEMES: Record<ThemeKey, { label: string; icon: string }> = {
-  marketing: { label: "Marketing", icon: "/icons/marketing.png" },
-  design: { label: "Design", icon: "/icons/design.png" },
-  web: { label: "Web", icon: "/icons/web.png" },
-  ia: { label: "IA", icon: "/icons/ia.png" },
-  apps: { label: "Apps", icon: "/icons/apps.png" },
+  marketing: { label: "Marketing", icon: "/Icons/marketing.png" },
+  design: { label: "Design", icon: "/Icons/design.png" },
+  web: { label: "Web", icon: "/Icons/web.png" },
+  ia: { label: "IA", icon: "/Icons/ia.png" },
+  apps: { label: "Apps", icon: "/Icons/apps.png" },
 };
 
 function cn(...cls: Array<string | false | undefined>) {
@@ -138,7 +138,7 @@ export default function ServicesNav({
               onMouseLeave={() => setHover(false)}
             >
               <Image
-                src={hover ? "/icons/contactar.gif" : "/icons/contactar.png"}
+                src={hover ? "/Icons/contactar.gif" : "/Icons/contactar.png"}
                 alt=""
                 width={20}
                 height={20}
@@ -160,7 +160,7 @@ export default function ServicesNav({
           className="group inline-flex items-center gap-3 rounded-2xl border border-black/30 bg-white/80 backdrop-blur px-4 py-2.5 shadow-sm"
           aria-label="Ir para a página de contacto"
         >
-          <Image src="/icons/contactar.png" alt="" width={20} height={20} className="shrink-0" />
+          <Image src="/Icons/contactar.png" alt="" width={20} height={20} className="shrink-0" />
           <span className="text-[15px] font-medium tracking-wide text-neutral-800">Contactar</span>
         </Link>
       </div>

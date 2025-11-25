@@ -15,11 +15,11 @@ export interface ServicesNavPage3Props {
 
 /* ------------------- Ícones ------------------- */
 const THEMES: Record<ThemeKey, { label: string; icon: string }> = {
-  marketing: { label: "Marketing", icon: "/icons/marketing.png" },
-  design: { label: "Design", icon: "/icons/design.png" },
-  web: { label: "Web", icon: "/icons/web.png" },
-  ia: { label: "IA", icon: "/icons/ia.png" },
-  apps: { label: "Apps", icon: "/icons/apps.png" },
+  marketing: { label: "Marketing", icon: "/Icons/marketing.png" },
+  design: { label: "Design", icon: "/Icons/design.png" },
+  web: { label: "Web", icon: "/Icons/web.png" },
+  ia: { label: "IA", icon: "/Icons/ia.png" },
+  apps: { label: "Apps", icon: "/Icons/apps.png" },
 };
 
 function cn(...cls: Array<string | false | undefined>) {
