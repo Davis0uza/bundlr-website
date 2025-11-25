@@ -1,28 +1,27 @@
 // components/RecommendedBundles.tsx
 "use client";
 
+
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { BUNDLES, type Bundle } from "@/data/bundles";
 
+type BundleTag = NonNullable<Bundle["tags"]>[number];
+
 export type BundleSelection = {
-  /** Seleção por ids (ordem respeitada) */
   ids?: string[];
-  /** Seleção por índices (ordem respeitada) */
   indices?: number[];
-  /** Seleção por tag (ex.: "Destaque", "Web", "Marketing", ...) */
-  tag?: string;
-  /** Limitar nº de cards (após seleção) */
+  tag?: BundleTag | string;
   limit?: number;
 };
 
+
 export default function RecommendedBundles({
-  emailTo = "hello@teu-dominio.com",
   className = "",
   selection,
 }: {
-  emailTo?: string;
   className?: string;
   selection?: BundleSelection;
 }) {
@@ -42,9 +41,11 @@ export default function RecommendedBundles({
     }
 
     if (sel.tag) {
-      const filtered = all.filter((b) => b.tags?.includes(sel.tag!));
+      const tag = sel.tag as BundleTag;
+      const filtered = all.filter((b) => b.tags?.includes(tag));
       return sel.limit ? filtered.slice(0, sel.limit) : filtered;
     }
+
 
     return sel.limit ? all.slice(0, sel.limit) : all;
   };
@@ -59,19 +60,6 @@ export default function RecommendedBundles({
     el.scrollBy({ left: dir === "left" ? -w : w, behavior: "smooth" });
   };
 
-  const mailHref = (plan: string) => {
-    const subject = `Interesse no plano ${plan} — Website Bundlr`;
-    const body = [
-      `Olá, estou interessado no plano ${plan}.`,
-      ``,
-      `O meu foco na adesão é : _______`,
-      `Estou disponível para uma reunião: ______`,
-      ``,
-      `Cumprimentos,`,
-      `"Seu Nome"`,
-    ].join("\n");
-    return `mailto:${emailTo}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  };
 
   if (!bundles.length) return null;
 
@@ -142,15 +130,15 @@ export default function RecommendedBundles({
                         )}
                       </div>
                     ) : (
-                      <a
+                      <Link
                         key={i}
-                        href={mailHref(b.name)}
+                        href={`/contact?bundle=${encodeURIComponent(b.name)}`}
                         className="group grid place-items-center rounded-2xl border border-transparent bg-[linear-gradient(135deg,#ffd1f7_0%,#bfe5ff_100%)] p-3 text-center text-[#0b1220] shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                         aria-label={`Quero o plano ${b.name}`}
                       >
                         <span className="text-base font-semibold">Quero!</span>
                         <ArrowRight size={18} className="mt-1 transition group-hover:translate-x-0.5" />
-                      </a>
+                      </Link>
                     )
                   )}
                 </div>

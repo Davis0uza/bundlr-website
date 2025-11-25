@@ -160,10 +160,62 @@ export default function Page() {
     return () => io.disconnect();
   }, [active]);
 
+  // Faz scroll dentro do container principal para uma secção específica
+  const scrollToSection = (id: string) => {
+    const root = containerRef.current;
+    if (!root) return;
+
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    // Desativa scroll-snap temporariamente para não “puxar” para a secção errada
+    const prevSnap = root.style.scrollSnapType;
+    root.style.scrollSnapType = "none";
+
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    // Volta a ativar o snap depois do scroll (tempo aproximado da animação)
+    window.setTimeout(() => {
+      root.style.scrollSnapType = prevSnap;
+    }, 700);
+  };
+
+
+    // Quando a page abre (ou o hash muda), garantir que scrolla para a secção certa
+    // Quando a page abre (ou o hash muda), garantir que scrolla para a secção certa
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleHashChange = () => {
+      const { hash } = window.location;
+      if (!hash) return;
+      const id = hash.slice(1); // "#section-web" -> "section-web"
+      scrollToSection(id);
+    };
+
+    // Ao entrar em /services#section-...
+    // Pequeno timeout dá tempo para o layout inicial estabilizar
+    setTimeout(handleHashChange, 0);
+
+    // Se o hash mudar já dentro da página
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, [scrollToSection]);
+
+
+
   // Clique na navbar → scroll suave para a secção
   const handleNavigate = (key: ThemeKey) => {
-    const el = document.getElementById(`section-${key}`);
-    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const id = `section-${key}`;
+    scrollToSection(id);
+
+    // Mantém o URL sincronizado com a secção atual
+    if (typeof window !== "undefined") {
+      const newHash = `#${id}`;
+      if (window.location.hash !== newHash) {
+        window.history.replaceState(null, "", newHash);
+      }
+    }
   };
 
   return (
