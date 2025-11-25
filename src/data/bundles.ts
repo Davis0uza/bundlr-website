@@ -11,7 +11,7 @@ export type Bundle = {
   id: string;
   name: string;
   subtitle?: string;
-  tags?: ("Marketing" | "Design" | "Web" | "Apps" | "Destaque")[];
+  tags?: ("Marketing" | "Design" | "Web" | "Apps" | "Destaque" | "IA")[];
   grid: [GridItem, GridItem, GridItem, GridItem]; // 2x2 (3 serviços + 1 CTA)
 };
 
@@ -30,7 +30,7 @@ export const BUNDLES: Bundle[] = [
     {
     id: "catalogo-digital",
     name: "Catálogo Digital",
-    tags: ["Web", "Marketing", "Destaque"],
+    tags: ["Web", "Destaque"],
     grid: [
       { kind: "service", label: "Catálogo online", note: "produtos/serviços" },
       { kind: "service", label: "Pesquisa e filtros", note: "encontrar rápido" },
@@ -41,7 +41,7 @@ export const BUNDLES: Bundle[] = [
   {
     id: "loja-rapida",
     name: "Loja Rápida",
-    tags: ["Web", "Marketing", "Destaque"],
+    tags: ["Web", "Destaque"],
     grid: [
       { kind: "service", label: "Página de vendas", note: "checkout simples" },
       { kind: "service", label: "Pagamentos online" },
@@ -52,7 +52,7 @@ export const BUNDLES: Bundle[] = [
   {
     id: "branding",
     name: "Branding",
-    tags: ["Design", "Marketing"],
+    tags: ["Design"],
     grid: [
       { kind: "service", label: "Logotipo + cores", note: "base da marca" },
       { kind: "service", label: "Guia rápido de uso", note: "consistência" },
@@ -63,7 +63,7 @@ export const BUNDLES: Bundle[] = [
   {
     id: "mvp-rapido",
     name: "MVP Rápido",
-    tags: ["Apps", "Web"],
+    tags: ["Apps"],
     grid: [
       { kind: "service", label: "Protótipo navegável", note: "teste a ideia" },
       { kind: "service", label: "Ecrãs principais", note: "UI simples" },
@@ -96,7 +96,7 @@ export const BUNDLES: Bundle[] = [
   {
     id: "experiencia-imersiva",
     name: "Experiência Imersiva",
-    tags: ["Apps", "Marketing"],
+    tags: ["Apps"],
     grid: [
       { kind: "service", label: "AR/VR rooms", note: "tours, imobiliária, turismo" },
       { kind: "service", label: "Página de ativação", note: "explicar e captar" },
@@ -107,7 +107,7 @@ export const BUNDLES: Bundle[] = [
   {
     id: "rebrand-leve",
     name: "Rebrand Leve",
-    tags: ["Design", "Web"],
+    tags: ["Design"],
     grid: [
       { kind: "service", label: "Logotipo novo", note: "versões essenciais" },
       { kind: "service", label: "Identidade visual", note: "cores e tipografia" },
@@ -118,7 +118,7 @@ export const BUNDLES: Bundle[] = [
   {
     id: "site-completo",
     name: "Site Completo",
-    tags: ["Web", "Marketing", "Destaque"],
+    tags: ["Web", "Destaque"],
     grid: [
       { kind: "service", label: "Website institucional", note: "páginas principais" },
       { kind: "service", label: "Formulários de contacto", note: "gere leads" },
@@ -129,7 +129,7 @@ export const BUNDLES: Bundle[] = [
   {
     id: "anuncios-locais",
     name: "Anúncios Locais",
-    tags: ["Marketing", "Design", "Destaque"],
+    tags: ["Marketing", "Destaque"],
     grid: [
       { kind: "service", label: "Objetivo & orçamento", note: "plano simples" },
       { kind: "service", label: "Criativos para anúncios", note: "imagem + texto" },
@@ -140,7 +140,7 @@ export const BUNDLES: Bundle[] = [
   {
     id: "papelaria-pro",
     name: "Papelaria Pro",
-    tags: ["Design", "Marketing"],
+    tags: ["Design"],
     grid: [
       { kind: "service", label: "Cartões de visita", note: "físico e digital" },
       { kind: "service", label: "Envelope & timbrado", note: "profissional" },
@@ -151,7 +151,7 @@ export const BUNDLES: Bundle[] = [
   {
     id: "automacao-simples",
     name: "Automação Simples",
-    tags: ["Apps", "Marketing", "Destaque"],
+    tags: ["IA", "Apps", "Destaque"],
     grid: [
       { kind: "service", label: "Respostas automáticas", note: "WhatsApp/email" },
       { kind: "service", label: "Recolha de contactos", note: "lista organizada" },
@@ -195,9 +195,9 @@ export const BUNDLES: Bundle[] = [
   {
     id: "eventos-automatizados",
     name: "Eventos Automatizados",
-    tags: ["Apps", "Web"],
+    tags: ["IA","Apps", "Web"],
     grid: [
-      { kind: "service", label: "Página do evento + AI assistente", note: "FAQ automático" },
+      { kind: "service", label: "Página do evento", note: "FAQ automático" },
       { kind: "service", label: "Kit gráfico", note: "cartazes, outdoors, convites" },
       { kind: "service", label: "Bilheteira Inteligente", note: "emails, listas, presenças" },
       { kind: "cta" },
@@ -208,7 +208,7 @@ export const BUNDLES: Bundle[] = [
     name: "Destaque no Google Maps",
     tags: ["Marketing", "Web", "Destaque"], // contém a tag extra por nomenclatura; editar se necessário
     grid: [
-      { kind: "service", label: "50 Citações", note: "comentários, palavras‑chave" },
+      { kind: "service", label: "+ Comentários", note: "Estratégias para recolher mais avaliações" },
       { kind: "service", label: "Cobertura mínima 20 km", note: "destaque local" },
       { kind: "service", label: "Otimização de conteúdo", note: "reconfigurações SEO" },
       { kind: "cta" },
@@ -220,7 +220,7 @@ export const BUNDLES: Bundle[] = [
     tags: ["Marketing", "Web", "Destaque"], // contém a tag extra por nomenclatura; editar se necessário
     grid: [
       { kind: "service", label: "Conteúdo SEO", note: "palavras‑chave, títulos, descrições" },
-      { kind: "service", label: "Backlinks Seguros" },
+      { kind: "service", label: "Backlinks Seguros", note: "destaque local" },
       { kind: "service", label: "Endereçamento & Reconfigurações", note: "estratégias de tráfego" },
       { kind: "cta" },
     ],

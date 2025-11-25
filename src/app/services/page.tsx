@@ -139,26 +139,42 @@ export default function Page() {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Atualiza qual secção está mais visível (para navbar)
-  useEffect(() => {
-    const root = containerRef.current;
-    if (!root) return;
+  // Atualiza qual secção está mais “central” no viewport do container (para navbar)
+useEffect(() => {
+  const root = containerRef.current;
+  if (!root) return;
 
-    const sections = Array.from(root.querySelectorAll<HTMLElement>("section[data-key]"));
-    const io = new IntersectionObserver(
-      (entries) => {
-        const top = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (!top) return;
-        const k = top.target.getAttribute("data-key") as ThemeKey | null;
-        if (k && k !== active) setActive(k);
-      },
-      { root, threshold: [0.55, 0.8] }
-    );
+  const sections = Array.from(root.querySelectorAll<HTMLElement>("section[data-key]"));
+  if (sections.length === 0) return;
 
-    sections.forEach((s) => io.observe(s));
-    return () => io.disconnect();
-  }, [active]);
+  const handleScroll = () => {
+    const rootRect = root.getBoundingClientRect();
+    const rootCenter = (rootRect.top + rootRect.bottom) / 2;
+
+    let bestKey: ThemeKey | null = null;
+    let bestDist = Infinity;
+
+    for (const s of sections) {
+      const rect = s.getBoundingClientRect();
+      const sectionCenter = (rect.top + rect.bottom) / 2;
+      const dist = Math.abs(sectionCenter - rootCenter);
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestKey = s.getAttribute("data-key") as ThemeKey | null;
+      }
+    }
+
+    if (bestKey && bestKey !== active) {
+      setActive(bestKey);
+    }
+  };
+
+  // Atualiza logo ao entrar na página
+  handleScroll();
+
+  root.addEventListener("scroll", handleScroll, { passive: true });
+  return () => root.removeEventListener("scroll", handleScroll);
+}, [active]);
 
       // Faz scroll dentro do container para uma secção específica (sem snap nem smooth)
   const scrollToSection = (id: string) => {
@@ -196,15 +212,9 @@ export default function Page() {
   }, []);
 
 
-
-
-
-  // Clique na navbar → scroll suave para a secção
   const handleNavigate = (key: ThemeKey) => {
     const id = `section-${key}`;
     scrollToSection(id);
-
-    // Mantém o URL sincronizado com a secção atual
     if (typeof window !== "undefined") {
       const newHash = `#${id}`;
       if (window.location.hash !== newHash) {
@@ -216,18 +226,18 @@ export default function Page() {
   return (
     <div className="relative">
       <ServicesNav activeSection={active} onNavigate={handleNavigate} />
-
-      {/* Scroller com jumps (snap) — usa o body offset de 80px da navbar via scroll-pt-20 */}
       <div
         ref={containerRef}
         className="
-          h-[100svh] md:h-[100vh]
-          overflow-y-auto overscroll-y-contain
-          touch-pan-y
-          scroll-pt-20
-          [scrollbar-gutter:stable]
-        "
+                h-[100svh] md:h-[100vh]
+                overflow-y-auto overscroll-y-contain
+                overflow-x-hidden
+                touch-pan-y
+                scroll-pt-20
+                [scrollbar-gutter:stable]
+              "
       >
+
 
         {SERVICE_SECTIONS.map((s, i) => (
         <Section key={s.key} data={s} isLast={i === SERVICE_SECTIONS.length - 1} />

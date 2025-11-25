@@ -155,7 +155,7 @@ export default function ServicesNav({
       {/* Mobile: botão flutuante de contactar mantém-se */}
       <div className="sm:hidden fixed top-[86px] right-4 z-[1000]">
         <Link
-          href="/page3"
+          href="/contact"
           onClick={onContactClick}
           className="group inline-flex items-center gap-3 rounded-2xl border border-black/30 bg-white/80 backdrop-blur px-4 py-2.5 shadow-sm"
           aria-label="Ir para a página de contacto"
