@@ -71,7 +71,7 @@ export default function GradientBackdrop({
     if (!controlledTheme || controlledTheme === theme) return;
     setPrev(theme);
     setTheme(controlledTheme);
-  }, [controlledTheme]);
+  }, [controlledTheme, theme]);
 
   // Modo não-controlado: ouvir o evento global "theme-change"
   useEffect(() => {

@@ -95,7 +95,7 @@ const AnimatedWavesLite: React.FC<Props> = ({
     };
     let gradient = makeGradient();
 
-    let phases = cfg.map(() => Math.random() * Math.PI * 2);
+    const phases = cfg.map(() => Math.random() * Math.PI * 2);
     let raf = 0;
     let last = performance.now();
 

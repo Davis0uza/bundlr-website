@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 export type AnimatedFooterProps = {
   className?: string;
@@ -55,11 +56,12 @@ export default function AnimatedFooter({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {/* Brand / Slogan */}
               <div className="max-w-xl">
-                <img
+               <Image
                   src="/logo.png"
                   alt="BUNDLR logo"
+                  width={160}
+                  height={40}
                   className="h-10 w-auto mb-6"
-                  loading="lazy"
                 />
                 <h3 className="text-3xl leading-tight font-semibold tracking-tight mb-2">
                   {slogan}

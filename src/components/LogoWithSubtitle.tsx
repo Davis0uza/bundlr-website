@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 // Respeita prefers-reduced-motion
 function usePrefersReducedMotion() {
@@ -36,6 +36,33 @@ export default function LogoWithSubtitle() {
   const textAnimRef = useRef<HTMLSpanElement | null>(null);
 
   const reduced = usePrefersReducedMotion();
+
+  // ---------- Função de gradiente animado (memoizada) ----------
+  const animateGradient = useCallback(
+    (t: number) => {
+      const el = textAnimRef.current;
+      if (!el || reduced) return;
+
+      const a1 = 0.925 + 0.075 * Math.sin(t * 0.9);
+      const a2 = 0.925 + 0.075 * Math.sin(t * 0.9 + Math.PI / 2);
+      const angle = (t * 28) % 360;
+
+      const pink = `rgba(255,154,216,${a1})`;
+      const blue = `rgba(140,207,255,${a2})`;
+
+      const bx = 50 + Math.sin(t * 0.5) * 25;
+      const by = 50 + Math.cos(t * 0.6) * 25;
+
+      el.style.backgroundImage = `linear-gradient(${angle}deg, ${pink} 0%, ${blue} 100%)`;
+      el.style.backgroundSize = "200% 200%";
+      el.style.backgroundPosition = `${bx}% ${by}%`;
+      el.style.backgroundClip = "text";
+      el.style.webkitBackgroundClip = "text";
+      el.style.webkitTextFillColor = "transparent";
+      el.style.color = "transparent";
+    },
+    [reduced]
+  );
 
   // ---------- Animação de entrada ----------
   useEffect(() => {
@@ -81,9 +108,9 @@ export default function LogoWithSubtitle() {
     // bases
     const STRENGTH_LOGO = 12; // puxa (logo)
     const STRENGTH_TEXT = 10; // empurra (subtítulo)
-    const AMP_LOGO_BASE = 4;  // idle
-    const AMP_TEXT_BASE = 5;  // idle
-    const SPEED = 0.85;       // rad/s
+    const AMP_LOGO_BASE = 4; // idle
+    const AMP_TEXT_BASE = 5; // idle
+    const SPEED = 0.85; // rad/s
 
     const pLogo = { x: 0, y: 0 };
     const pText = { x: 0, y: 0 };
@@ -123,7 +150,7 @@ export default function LogoWithSubtitle() {
 
     // Idle loop com escala responsiva
     let rafIdle = 0;
-    let start = performance.now();
+    const start = performance.now();
 
     const tick = (now: number) => {
       const t = (now - start) / 1000;
@@ -151,9 +178,9 @@ export default function LogoWithSubtitle() {
       cancelAnimationFrame(rafParallax);
       cancelAnimationFrame(rafIdle);
     };
-  }, [reduced]);
+  }, [reduced, animateGradient]);
 
-  // ---------- Degradê animado + drop-shadow ----------
+  // ---------- Degradê estático + drop-shadow para prefers-reduced-motion ----------
   useEffect(() => {
     if (!textAnimRef.current) return;
     textAnimRef.current.style.textShadow = "0 2px 8px rgba(0,0,0,0.15)";
@@ -161,38 +188,11 @@ export default function LogoWithSubtitle() {
       textAnimRef.current.style.backgroundImage =
         `linear-gradient(45deg, rgba(255,154,216,0.95) 0%, rgba(140,207,255,0.95) 100%)`;
       textAnimRef.current.style.backgroundClip = "text";
-      // @ts-ignore
       textAnimRef.current.style.webkitBackgroundClip = "text";
-      // @ts-ignore
       textAnimRef.current.style.webkitTextFillColor = "transparent";
       textAnimRef.current.style.color = "transparent";
     }
   }, [reduced]);
-
-  function animateGradient(t: number) {
-    const el = textAnimRef.current;
-    if (!el || reduced) return;
-
-    const a1 = 0.925 + 0.075 * Math.sin(t * 0.9);
-    const a2 = 0.925 + 0.075 * Math.sin(t * 0.9 + Math.PI / 2);
-    const angle = (t * 28) % 360;
-
-    const pink = `rgba(255,154,216,${a1})`;
-    const blue = `rgba(140,207,255,${a2})`;
-
-    const bx = 50 + Math.sin(t * 0.5) * 25;
-    const by = 50 + Math.cos(t * 0.6) * 25;
-
-    el.style.backgroundImage = `linear-gradient(${angle}deg, ${pink} 0%, ${blue} 100%)`;
-    el.style.backgroundSize = "200% 200%";
-    el.style.backgroundPosition = `${bx}% ${by}%`;
-    el.style.backgroundClip = "text";
-    // @ts-ignore
-    el.style.webkitBackgroundClip = "text";
-    // @ts-ignore
-    el.style.webkitTextFillColor = "transparent";
-    el.style.color = "transparent";
-  }
 
   return (
     <div
@@ -219,8 +219,7 @@ export default function LogoWithSubtitle() {
         </div>
       </div>
 
-      {/* Subtítulo (parallax no wrapper, gradiente no span)
-          Espaçamento X2: antes mt[clamp(18px,4.5vw,30px)] → agora mt[clamp(36px,9vw,60px)] */}
+      {/* Subtítulo (parallax no wrapper, gradiente no span) */}
       <p
         ref={textParallaxWrapRef}
         className="mt-[clamp(36px,9vw,60px)] will-change-transform transition-transform duration-150 ease-out"
@@ -232,7 +231,6 @@ export default function LogoWithSubtitle() {
         >
           O CONJUNTO DE SOLUÇÕES PARA IMPULSIONAR O SEU NEGÓCIO.
           <br className="hidden sm:block" />
-          
         </span>
       </p>
     </div>

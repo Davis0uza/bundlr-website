@@ -62,7 +62,12 @@ function ChatBubble({
   const bubbleInView = useInView(bubbleRef, { once: true, amount: 0.6 });
 
   // Timings: bolha entra (x) e só depois o texto sobe
-  const bubbleTransition = { delay, type: "spring", stiffness: 220, damping: 22 };
+  const bubbleTransition = {
+    delay,
+    type: "spring" as const,
+    stiffness: 220,
+    damping: 22,
+  };
   const textDelayAfterBubble = delay + 0.18;
 
   return (
@@ -71,7 +76,7 @@ function ChatBubble({
       initial={{ opacity: 0, x: isRight ? 24 : -24, scale: 0.98 }}
       whileInView={{ opacity: 1, x: 0, scale: 1 }}
       viewport={{ once: true, amount: 0.6 }}
-      transition={{ delay, type: "spring" as const, stiffness: 220, damping: 22 }}
+      transition={bubbleTransition}
       className={[
         "relative flex max-w-[85%] items-end gap-3 md:max-w-[70%]",
         isRight ? "ml-auto justify-end" : "mr-auto",

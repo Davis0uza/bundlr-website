@@ -5,7 +5,7 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import ServicesNav, { ThemeKey } from "@/components/ServicesNav";
 import { SERVICE_SECTIONS, type ServiceSection } from "@/data/services";
-import { motion } from "framer-motion";
+import { motion, type Variants, type TargetAndTransition } from "framer-motion";
 import AnimatedFooter from "@/components/AnimatedFooter";
 
 // Lazy para evitar hidratação pesada
@@ -23,9 +23,22 @@ const GRADIENTS: Record<ThemeKey, [string, string]> = {
   marketing: ["#ffe0e0", "#ffeaf2"],
 };
 /* ------------------------------------------------------------------ */
+type PhraseChildVariants = {
+  hidden: TargetAndTransition;
+  visible: TargetAndTransition;
+};
+
+type PhraseVariantConfig = {
+  hidden?: TargetAndTransition;
+  visible?: TargetAndTransition;
+  child?: PhraseChildVariants;
+  wiggle?: TargetAndTransition;
+};
+
+
 
 /* Animações da frase — marketing passa a usar o mesmo estilo de apps */
-const phraseVariants: Record<ThemeKey, any> = {
+const phraseVariants: Record<ThemeKey, PhraseVariantConfig> = {
   marketing: {
     hidden: {},
     visible: { transition: { staggerChildren: 0.03 } },
@@ -73,11 +86,21 @@ function AnimatedPhrase({ theme, text }: { theme: ThemeKey; text: string }) {
   const cls = "text-xl sm:text-2xl font-medium text-neutral-800";
 
   // Marketing usa a mesma lógica de apps (stagger de caracteres)
-  if (theme === "design" || theme === "apps" || theme === "marketing") {
+    if (theme === "design" || theme === "apps" || theme === "marketing") {
     return (
-      <motion.p initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.6 }} variants={v} className={cls}>
+      <motion.p
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.6 }}
+        variants={v as Variants}
+        className={cls}
+      >
         {text.split("").map((ch, i) => (
-          <motion.span key={i} variants={v.child} className="inline-block">
+          <motion.span
+            key={i}
+            variants={v.child as unknown as Variants}
+            className="inline-block"
+          >
             {ch === " " ? "\u00A0" : ch}
           </motion.span>
         ))}
@@ -86,16 +109,29 @@ function AnimatedPhrase({ theme, text }: { theme: ThemeKey; text: string }) {
   }
   if (theme === "ia") {
     return (
-      <motion.p initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.6 }} variants={v} className={cls}>
+      <motion.p
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.6 }}
+        variants={v as Variants}
+        className={cls}
+      >
         <motion.span animate={v.wiggle}>{text}</motion.span>
       </motion.p>
     );
   }
   return (
-    <motion.p initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.6 }} variants={v} className={cls}>
-      {text}
-    </motion.p>
-  );
+  <motion.p
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true, amount: 0.6 }}
+    variants={v as Variants}
+    className={cls}
+  >
+    {text}
+  </motion.p>
+);
+
 }
 
 export default function Page() {

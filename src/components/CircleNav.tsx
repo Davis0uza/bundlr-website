@@ -4,6 +4,7 @@ import { useId, useState, useEffect } from "react";
 import { motion, useAnimationControls, type Variants } from "framer-motion";
 import { Roboto } from "next/font/google";
 import type { ComponentType } from "react";
+import Image from "next/image";
 
 const robotoBold = Roboto({ weight: "800", subsets: ["latin"], display: "swap" });
 
@@ -209,9 +210,11 @@ function GifOnHover({
   }, [isHover, gif, still]);
 
   return (
-    <img
+     <Image
       src={src}
       alt={alt}
+      width={40}
+      height={40}
       className={`h-7 w-7 md:h-7 md:w-7 lg:h-10 lg:w-10 select-none ${className}`}
       draggable={false}
       aria-hidden={alt === ""}

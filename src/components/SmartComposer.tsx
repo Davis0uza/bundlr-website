@@ -73,7 +73,9 @@ export default function SmartComposer({
   const mailHref = `mailto:${emailTo}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
     message
   )}`;
-  const scheduleHref = "https://docs.google.com/forms/d/e/1FAIpQLSe68HTg1Db4NBW4xiIHdzchFDPNoz68QNiKWM81Tdx6V03bTg/viewform?usp=publish-editor";
+  const scheduleHref =
+  scheduleUrl ||
+  "https://docs.google.com/forms/d/e/1FAIpQLSe68HTg1Db4NBW4xiIHdzchFDPNoz68QNiKWM81Tdx6V03bTg/viewform?usp=publish-editor";
 
   // Compose links
   const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
