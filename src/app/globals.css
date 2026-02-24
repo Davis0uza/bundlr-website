@@ -2,8 +2,10 @@
 
 /* tokens base que já tens */
 :root {
-  --background: #ffffff;      /* light background */
-  --foreground: #171717;      /* light text */
+  --background: #ffffff;
+  /* light background */
+  --foreground: #171717;
+  /* light text */
 }
 
 /* ➜ Personalização do tema (Tailwind v4) */
@@ -13,7 +15,7 @@
   --color-foreground: var(--foreground);
 
   /* usa Roboto como sans global */
-  --font-sans: var(--font-roboto);
+  --font-sans: var(--font-outfit);
   --font-mono: var(--font-geist-mono);
 
   /* >>> Paleta Bundlr (exemplo) <<< */
@@ -22,7 +24,8 @@
   --color-lilac-150: #efe7ff;
   --color-lilac-250: #e4d8ff;
   --color-lilac-350: #cdbbff;
-  --color-ink: #1a1325;       /* texto escuro elegante */
+  --color-ink: #1a1325;
+  /* texto escuro elegante */
 
   /* raios, sombras, etc. (opcional)
   --radius-card: 1rem;
@@ -41,14 +44,17 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans); 
+  font-family: var(--font-sans);
 }
 
 /* Fundo base da página (fallback) */
-html, body {
+html,
+body {
   background: #f5f7fb;
+  overflow-x: hidden;
 }
 
 .smart-composer textarea {
-  color: #0b1220;      /* texto preto/azulado, igual ao resto do componente */
+  color: #0b1220;
+  /* texto preto/azulado, igual ao resto do componente */
 }

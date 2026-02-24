@@ -5,6 +5,8 @@ import Image from "next/image";
 import ServicesNavPage3 from "@/components/ServicesNavPage3";
 import AnimatedFooter from "@/components/AnimatedFooter";
 import SmartComposer from "@/components/SmartComposer";
+import ContactForm from "@/components/ContactForm";
+import LavaBubbles from "@/components/LavaBubbles";
 
 // TODO: substitui pelos teus links de Google Forms
 const FORM_COMECAR = "https://docs.google.com/forms/d/e/1FAIpQLSdbCNPIjxGAY4O-bBJf1WEf61dIW_r2b8i6UJTQmdV32_fK0g/viewform?usp=header";
@@ -12,12 +14,19 @@ const FORM_AGENDAR = "https://docs.google.com/forms/d/e/1FAIpQLSe68HTg1Db4NBW4xi
 
 export default function Page3() {
   return (
-    <main className="min-h-screen bg-[#f5f7fb]">
+    <main className="relative min-h-screen bg-[#f5f7fb] overflow-hidden">
+      {/* 3D Lava Bubbles background */}
+      <LavaBubbles />
       {/* NAV FIXA NO TOPO */}
-      <ServicesNavPage3 className="mb-10" />
+      <div className="relative z-10">
+        <ServicesNavPage3 className="mb-10" />
+      </div>
 
       {/* CONTEÚDO */}
-      <div className="mx-auto max-w-4xl px-6 sm:px-8 pb-28">
+      <div className="relative z-10 mx-auto max-w-4xl px-6 sm:px-8 pb-28">
+        {/* FORMULÁRIO DE CONTACTO */}
+        <ContactForm className="mb-16 pb-16 border-b border-zinc-200/60" />
+
         {/* BLOCO 1 */}
         <section className="mb-16">
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900">
@@ -39,13 +48,12 @@ export default function Page3() {
               href={FORM_COMECAR}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-3 rounded-2xl border border-black/10
-                        bg-gradient-to-br from-[#f7c7e7] via-[#e7d7ff] to-[#cfe7ff]
-                        px-6 py-3 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md"
+              className="group inline-flex items-center gap-3 rounded-full border border-white/40 px-7 py-3 text-sm font-semibold text-slate-800 backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#f4b8d0]/25 hover:border-[#f4b8d0]/50"
+              style={{
+                background: "linear-gradient(135deg, rgba(247,199,231,0.4) 0%, rgba(207,231,255,0.4) 100%)",
+              }}
             >
-              <span className="text-sm font-semibold tracking-wide text-slate-800">
-                COMEÇAR
-              </span>
+              <span className="tracking-wide">COMEÇAR</span>
               <Image
                 src="/Icons/form.svg"
                 alt=""
@@ -80,13 +88,12 @@ export default function Page3() {
               href={FORM_AGENDAR}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-3 rounded-2xl border border-black/10
-                        bg-gradient-to-br from-[#f7c7e7] via-[#e7d7ff] to-[#cfe7ff]
-                        px-6 py-3 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md"
+              className="group inline-flex items-center gap-3 rounded-full border border-white/40 px-7 py-3 text-sm font-semibold text-slate-800 backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#f4b8d0]/25 hover:border-[#f4b8d0]/50"
+              style={{
+                background: "linear-gradient(135deg, rgba(247,199,231,0.4) 0%, rgba(207,231,255,0.4) 100%)",
+              }}
             >
-              <span className="text-sm font-semibold tracking-wide text-slate-800">
-                AGENDAR
-              </span>
+              <span className="tracking-wide">AGENDAR</span>
               <Image
                 src="/Icons/agendar.svg"
                 alt=""
@@ -106,13 +113,13 @@ export default function Page3() {
           </h3>
 
           {/* Podes passar whatsappNumber / emailTo se quiseres sobrescrever os defaults */}
-             <div className="mt-6">
-                      <SmartComposer
-                        whatsappNumber="351912345678" // opcional: sem o '+'
-                        emailTo="bundlr.solutions@gmail.com" // opcional
-                        scheduleUrl="/contact" // opcional (acrescenta ?note=mensagem)
-                      />
-              </div>
+          <div className="mt-6">
+            <SmartComposer
+              whatsappNumber="351912345678" // opcional: sem o '+'
+              emailTo="bundlr.solutions@gmail.com" // opcional
+              scheduleUrl="/contact" // opcional (acrescenta ?note=mensagem)
+            />
+          </div>
         </section>
       </div>
 

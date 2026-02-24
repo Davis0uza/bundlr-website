@@ -4,14 +4,13 @@ import { motion, useInView, useReducedMotion } from "framer-motion";
 import React, { useRef } from "react";
 
 export type ChatItem = {
-  role: "client" | "team"; // client => direita | team => esquerda
+  role: "client" | "team";
   text: string;
 };
 
 export default function ChatFAQ({ items: itemsProp }: { items?: ChatItem[] }) {
   const items = itemsProp ?? defaultItems;
   const rootRef = useRef<HTMLDivElement | null>(null);
-  useInView(rootRef, { once: true, amount: 0.25 }); // mantém, caso uses no futuro
 
   return (
     <section
@@ -19,20 +18,24 @@ export default function ChatFAQ({ items: itemsProp }: { items?: ChatItem[] }) {
       id="faq"
       className="relative mx-auto max-w-5xl px-6 py-16 md:py-20"
     >
-      <header className="mb-8 md:mb-10">
-        <h2 className="text-2xl font-semibold tracking-tight text-[#0b1220] md:text-3xl">
-          FAQ em conversa
-        </h2>
-        <p className="mt-1 text-sm text-[#51607a] md:text-base">
-          Perguntas reais que recebemos — respondidas como numa chat thread.
-        </p>
+      <header className="mb-10 text-center md:mb-12">
+        <div className="inline-flex items-center gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#efd1f4]/30 ring-1 ring-[#efd1f4]/50">
+            <svg className="h-5 w-5 text-[#d4a0b9]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+          </span>
+          <h2 className="text-2xl font-bold tracking-tight text-[#0b1220] md:text-3xl">
+            Perguntas Frequentes
+          </h2>
+        </div>
       </header>
 
       <div className="space-y-5">
         {items.map((m, i) => (
           <ChatBubble
             key={i}
-            align={m.role === "client" ? "right" : "left"}
+            role={m.role}
             delay={i * 0.05}
             text={m.text}
           />
@@ -43,25 +46,23 @@ export default function ChatFAQ({ items: itemsProp }: { items?: ChatItem[] }) {
 }
 
 function ChatBubble({
-  align,
+  role,
   delay = 0,
   text,
 }: {
-  align: "left" | "right";
+  role: "client" | "team";
   delay?: number;
   text: string;
 }) {
-  const isRight = align === "right";
-  const bg = isRight
-    ? "bg-[linear-gradient(135deg,#bfe5ff_0%,#d7efff_100%)]"
-    : "bg-[linear-gradient(135deg,#efd1f4_0%,#cfe0ff_100%)]";
-  const tailColor = isRight ? "#d7efff" : "#dcd9ff";
+  const isClient = role === "client";
 
-  // Cada bolha controla o seu próprio inView
+  const bg = isClient
+    ? "bg-white ring-1 ring-black/5"
+    : "bg-[linear-gradient(135deg,#efd1f4_0%,#cfe0ff_100%)] ring-1 ring-black/5";
+
   const bubbleRef = React.useRef<HTMLDivElement | null>(null);
   const bubbleInView = useInView(bubbleRef, { once: true, amount: 0.6 });
 
-  // Timings: bolha entra (x) e só depois o texto sobe
   const bubbleTransition = {
     delay,
     type: "spring" as const,
@@ -73,68 +74,43 @@ function ChatBubble({
   return (
     <motion.div
       ref={bubbleRef}
-      initial={{ opacity: 0, x: isRight ? 24 : -24, scale: 0.98 }}
-      whileInView={{ opacity: 1, x: 0, scale: 1 }}
+      initial={{ opacity: 0, y: 16, scale: 0.98 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, amount: 0.6 }}
       transition={bubbleTransition}
       className={[
-        "relative flex max-w-[85%] items-end gap-3 md:max-w-[70%]",
-        isRight ? "ml-auto justify-end" : "mr-auto",
+        "flex flex-col max-w-[85%] md:max-w-[70%]",
+        isClient ? "mr-auto" : "ml-auto items-end",
       ].join(" ")}
     >
-      {!isRight && (
-        <div className="hidden shrink-0 select-none md:block">
-          <Avatar label="Bundlr" color="#8b7bd1" />
-        </div>
-      )}
+      {/* Label above the bubble */}
+      <span
+        className={[
+          "mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-widest",
+          isClient ? "text-slate-400" : "text-[#d4a0b9]",
+        ].join(" ")}
+      >
+        {isClient ? "Cliente" : "Bundlr"}
+        {!isClient && (
+          <svg className="h-3 w-3 text-[#d4a0b9]" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+          </svg>
+        )}
+      </span>
 
       <div
         className={[
-          "relative rounded-2xl px-4 py-3 text-[16px] md:text-[18px] leading-7 md:leading-8 tracking-[0.01em] break-words",
-          "ring-1 ring-black/5 shadow-sm",
+          "rounded-2xl px-4 py-3 text-[15px] md:text-[16px] leading-7 md:leading-8 tracking-[0.01em] break-words shadow-sm",
           bg,
-          isRight ? "rounded-br-sm" : "rounded-bl-sm",
+          isClient ? "text-[#0b1220]" : "text-[#0b1220]",
         ].join(" ")}
       >
         <SmoothRevealText text={text} active={bubbleInView} delay={textDelayAfterBubble} />
-
-        <span
-          aria-hidden
-          className="pointer-events-none absolute bottom-2 h-3 w-3 rotate-45"
-          style={{
-            right: isRight ? "-6px" : undefined,
-            left: !isRight ? "-6px" : undefined,
-            background: tailColor,
-            boxShadow: "0 1px 1px rgba(0,0,0,.05)",
-          }}
-        />
       </div>
-
-      {isRight && (
-        <div className="hidden shrink-0 select-none md:block">
-          <Avatar label="Cliente" color="#69a8ff" />
-        </div>
-      )}
     </motion.div>
   );
 }
 
-function Avatar({ label, color }: { label: string; color: string }) {
-  return (
-    <div
-      className="grid h-8 w-8 place-items-center rounded-full text-[10px] font-semibold text-white shadow-sm"
-      style={{ background: color }}
-      aria-hidden
-    >
-      {label.slice(0, 1)}
-    </div>
-  );
-}
-
-/**
- * Texto que aparece de uma vez, de baixo para cima.
- * Respeita prefers-reduced-motion (sem animação).
- */
 function SmoothRevealText({
   text,
   active = false,
@@ -163,42 +139,23 @@ function SmoothRevealText({
 
 const defaultItems: ChatItem[] = [
   {
-    role: "client",
-    text:
-      "Preciso de automações para organizar a minha caixa de email e acelerar respostas. Conseguem?",
-  },
-  {
     role: "team",
-    text:
-      "Claro. Montamos fluxos no Gmail/Outlook, templates inteligentes, etiquetas automáticas, integrações com Slack e dashboards para métricas de resposta.",
+    text: "Olá! 👋 Somos a Bundlr. Em que podemos ajudar o seu negócio hoje?",
   },
   {
     role: "client",
-    text:
-      "Já tenho site. Quero modernizar o design e vender produtos com faturação certificada.",
+    text: "Preciso de um site moderno e de alguém que trate do marketing digital. É possível tudo junto?",
   },
   {
     role: "team",
-    text:
-      "Fazemos auditoria UX/SEO, otimizamos performance e implementamos e-commerce com Stripe/Mollie/PayPal e faturação (ex.: InvoiceXpress).",
+    text: "Claro! Trabalhamos exatamente assim — design, desenvolvimento e marketing integrados num só pacote. Sem complicações.",
   },
   {
     role: "client",
-    text: "Podem tratar das minhas redes sociais e anúncios?",
+    text: "Perfeito. E quanto tempo demora mais ou menos?",
   },
   {
     role: "team",
-    text:
-      "Cuidamos do plano editorial, design, copy e campanhas. Entregamos relatórios de crescimento e aprendizados práticos todos os meses.",
-  },
-  {
-    role: "client",
-    text: "Tenho uma ideia para app. Conseguem desenvolver um MVP rápido?",
-  },
-  {
-    role: "team",
-    text:
-      "Sim — prototipagem em Figma, backlog claro e desenvolvimento ágil (web/app). Login social, pagamentos e analytics desde o início.",
+    text: "Depende do projeto, mas normalmente entre 2 a 4 semanas já tem tudo a funcionar. Marcamos uma call rápida para perceber o que precisa?",
   },
 ];
-  

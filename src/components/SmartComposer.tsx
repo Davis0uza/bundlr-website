@@ -74,8 +74,8 @@ export default function SmartComposer({
     message
   )}`;
   const scheduleHref =
-  scheduleUrl ||
-  "https://docs.google.com/forms/d/e/1FAIpQLSe68HTg1Db4NBW4xiIHdzchFDPNoz68QNiKWM81Tdx6V03bTg/viewform?usp=publish-editor";
+    scheduleUrl ||
+    "https://docs.google.com/forms/d/e/1FAIpQLSe68HTg1Db4NBW4xiIHdzchFDPNoz68QNiKWM81Tdx6V03bTg/viewform?usp=publish-editor";
 
   // Compose links
   const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
@@ -145,12 +145,15 @@ export default function SmartComposer({
         <button
           type="button"
           onClick={() => setEmailModalOpen(true)}
-          className="group inline-flex items-center gap-2 rounded-full border border-[#d7def0] bg-white/90 px-3 py-1.5 text-sm font-medium text-[#0b1220] shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:shadow-md"
+          className="group inline-flex items-center gap-2 rounded-full border border-white/40 px-5 py-2 text-sm font-semibold text-[#3a3a4a] backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#f4b8d0]/20 hover:border-[#f4b8d0]/50"
+          style={{
+            background: "linear-gradient(135deg, rgba(247,199,231,0.3) 0%, rgba(207,231,255,0.3) 100%)",
+          }}
         >
           <span>Email</span>
           <ArrowRight className="transition group-hover:translate-x-0.5" size={16} />
         </button>
-        <ActionLink href={scheduleHref} label="Agendar chamada" newTab/>
+        <ActionLink href={scheduleHref} label="Agendar chamada" newTab />
       </div>
 
       {/* MODAL: escolher provedor */}
@@ -178,7 +181,10 @@ function ActionLink({ href, label, newTab = false }: { href: string; label: stri
       href={href}
       target={newTab ? "_blank" : undefined}
       rel={newTab ? "noopener noreferrer" : undefined}
-      className="group inline-flex items-center gap-2 rounded-full border border-[#d7def0] bg-white/90 px-3 py-1.5 text-sm font-medium text-[#0b1220] shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      className="group inline-flex items-center gap-2 rounded-full border border-white/40 px-5 py-2 text-sm font-semibold text-[#3a3a4a] backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#f4b8d0]/20 hover:border-[#f4b8d0]/50"
+      style={{
+        background: "linear-gradient(135deg, rgba(247,199,231,0.3) 0%, rgba(207,231,255,0.3) 100%)",
+      }}
     >
       <span>{label}</span>
       <ArrowRight className="transition group-hover:translate-x-0.5" size={16} />

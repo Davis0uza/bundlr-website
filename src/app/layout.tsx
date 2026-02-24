@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Roboto, Geist_Mono } from "next/font/google";
+import { Outfit, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import SiteNavbar from "@/components/SiteNavbar";
 
-const roboto = Roboto({
+const outfit = Outfit({
   subsets: ["latin"],
-  weight: ["400", "700"],        
-  variable: "--font-roboto",
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-outfit",
   display: "swap",
 });
 
@@ -27,8 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${roboto.variable} ${geistMono.variable} antialiased`}
+        className={`${outfit.variable} ${geistMono.variable} antialiased`}
       >
+        <SiteNavbar />
         {children}
       </body>
     </html>

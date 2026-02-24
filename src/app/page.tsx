@@ -1,128 +1,152 @@
-// app/page.tsx
-import AnimatedWavesLite from "@/components/AnimatedWavesLite";
-import LogoWithSubtitle from "@/components/LogoWithSubtitle";
-import CircleNav from "@/components/CircleNav";
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import ChatFAQ from "@/components/ChatFAQ";
 import SmartComposer from "@/components/SmartComposer";
 import RecommendedBundles from "@/components/RecommendedBundles";
-import ProfileCard from "@/components/ProfileCard";
 import AnimatedFooter from "@/components/AnimatedFooter";
-
-
-const cards = [
-  {
-    // Card 1 — “Cyber Violet”
-    name: "Consolidar",
-    title: "Análise de mercado • Auditoria técnica",
-    subtitle: "Realizamos uma análise de mercado e identificamos oportunidades de melhoria. A partir deste diagnóstico, entregamos um plano objetivo que vai ao encontro das suas especificas necessidades.",
-    status: "Análise Completa",
-    contactText: "Começar",
-    avatarUrl: "/blank.png",
-    miniAvatarUrl: "/compass.png",
-    iconUrl: "/compass.png",
-    innerGradient: "linear-gradient(145deg,#2b5d8c 0%,#7d7d7d 100%)", // default vibe
-    behindGradient:
-      "radial-gradient(35% 52% at 55% 20%,#00ffaa80 0%,#0000 100%),radial-gradient(100% 100% at 50% 50%,#00c1ff66 1%,#0000 76%),conic-gradient(from 124deg at 50% 50%,#00c2a8 0%,#0ad1ff 50%,#00c2a8 100%)",
-  },
-  {
-    // Card 2 — “Sunset Peach”
-    name: "Construir",
-    title: "Design systems • n8n + APIs",
-    subtitle: "Soluções digitais como websites, apps e automações com n8n e APIs integradas. O resultado final são ecossistemas digitais modernos e preparados para responder às necessidades do seu negócio.",
-    status: "Produção Escalável",
-    contactText: "Acompanhar",
-    avatarUrl: "/blank.png",
-    miniAvatarUrl: "/gear.png",
-    iconUrl: "/gear.png",
-    innerGradient: "linear-gradient(145deg,#f24edc 0%,#7d7d7d 100%)",
-    behindGradient:
-      "radial-gradient(35% 52% at 55% 20%,#00ffaa80 0%,#0000 100%),radial-gradient(100% 100% at 50% 50%,#00c1ff66 1%,#0000 76%),conic-gradient(from 124deg at 50% 50%,#00c2a8 0%,#0ad1ff 50%,#00c2a8 100%)",
-  },
-  {
-    // Card 3 — “Aqua Mint”
-    name: "Crescer",
-    title: "Campanhas • Conteúdo • Alojamento",
-    subtitle: "Ajudamos na transformação da sua presença digital em resultados concretos, garantindo que a sua empresa ganha previsibilidade, escala e consistência na aquisição e retenção de clientes.",
-    status: "Otimização e Suporte",
-    contactText: "Consultar",
-    avatarUrl: "/blank.png",
-    miniAvatarUrl: "/rocket.png",
-    iconUrl: "/rocket.png",
-    innerGradient: "linear-gradient(145deg,#8093f1 0%,#7d7d7d 100%)",
-    behindGradient:
-      "radial-gradient(35% 52% at 55% 20%,#00ffaa80 0%,#0000 100%),radial-gradient(100% 100% at 50% 50%,#00c1ff66 1%,#0000 76%),conic-gradient(from 124deg at 50% 50%,#00c2a8 0%,#0ad1ff 50%,#00c2a8 100%)",
-  },
-];
+import ServicesSection from "@/components/ServicesSection";
+import MethodSection from "@/components/MethodSection";
+import HeroSceneWrapper from "@/components/HeroSceneWrapper";
+import RotatingHeroTitle from "@/components/RotatingHeroTitle";
 
 export default function HomePage() {
+  const router = useRouter();
+  const [isHovered, setIsHovered] = useState(false);
+  const [isClickedMobile, setIsClickedMobile] = useState(false);
+
+  const handleContactClick = (e: React.MouseEvent) => {
+    // Check if it's a mobile device (rough check via window width)
+    if (window.innerWidth < 768) {
+      e.preventDefault();
+      setIsClickedMobile(true);
+
+      // Delay navigation to let animation play
+      setTimeout(() => {
+        router.push("/contact");
+      }, 600);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f5f7fb] text-[#0b1220]">
-      {/* HERO (ondas normais) */}
-      <section className="relative h-[520px]">
-        <AnimatedWavesLite
-          layers={14}
-          gradientFrom="#ffd1f7"
-          gradientTo="#bfe5ff"
-          height={520}
-          quality={1}
-          fadeEdge="bottom"
-          fadeSize={120}
-        />
-        <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col px-6">
-          <div className="pt-6 md:pt-8">
-            <CircleNav />
-          </div>
+      {/* ── HERO ── */}
+      <section className="relative min-h-[620px] md:min-h-[700px] overflow-hidden bg-[#f5f7fb]">
+        {/* 3D background */}
+        <HeroSceneWrapper />
 
-          <div className="flex-1" />
+        {/* Frosted glass layer for text readability */}
+        <div className="absolute inset-0 z-[5] backdrop-blur-sm bg-white/25" />
 
-          <div className="pb-10 md:pb-14">
-            <LogoWithSubtitle />
+        {/* Content overlay */}
+        <div className="relative z-10 mx-auto flex min-h-[620px] md:min-h-[700px] max-w-6xl flex-col items-center justify-center px-6 text-center">
+          {/* Centered logo */}
+          <Image
+            src="/logo.png"
+            alt="Bundlr"
+            width={140}
+            height={36}
+            className="mb-5 h-auto w-28 md:w-32"
+            priority
+          />
+
+          {/* Badge */}
+          <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#efd1f4]/40 bg-white/60 px-4 py-1.5 text-xs font-medium tracking-widest text-[#9a7a8e] uppercase backdrop-blur-sm">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#9a7a8e]" style={{ animation: "dotPulse 2s ease-in-out infinite" }} />
+            Grupo de Design e Soluções Tecnológicas
+          </span>
+          <style>{`
+            @keyframes dotPulse {
+              0%, 100% { transform: scale(1); }
+              50% { transform: scale(1.8); }
+            }
+          `}</style>
+
+          {/* Heading with rotating word */}
+          <RotatingHeroTitle />
+
+          {/* Subtitle */}
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-700 md:text-lg" style={{ textShadow: "0 0 8px rgba(255,255,255,0.1)" }}>
+            Simplificamos o seu trabalho digital para que se possa focar no que
+            realmente importa. Realizamos vários tipos de trabalhos no setor de
+            informática, design e marketing, criando oportunidades para o seu
+            negócio crescer e destacar-se.
+          </p>
+
+          {/* CTA buttons */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/contact"
+              onClick={handleContactClick}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              className="group inline-flex items-center gap-3 rounded-full border border-white/40 px-7 py-3 text-sm font-semibold text-[#3a3a4a] backdrop-blur-md transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#f4b8d0]/25 hover:border-[#f4b8d0]/50"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(244,184,208,0.35) 0%, rgba(191,229,255,0.35) 100%)",
+              }}
+            >
+              <motion.span
+                animate={
+                  isClickedMobile
+                    ? { scale: 1.15, color: "#e27fa3" }
+                    : isHovered
+                      ? { color: "#e27fa3" }
+                      : { scale: 1, color: "#3a3a4a" }
+                }
+                transition={{ duration: 0.3 }}
+              >
+                Contactar Especialista
+              </motion.span>
+              <div className="relative h-5 w-5 shrink-0">
+                <Image
+                  src={isHovered ? "/Icons/contactar.gif" : "/Icons/contactar.png"}
+                  alt=""
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </Link>
+            <a
+              href="#servicos"
+              className="inline-flex items-center gap-2 rounded-full border border-[#3a3a4a]/15 bg-white/20 px-7 py-3 text-sm font-semibold text-[#3a3a4a] backdrop-blur-sm transition-all duration-300 hover:bg-white/40 hover:border-[#3a3a4a]/25"
+            >
+              Serviços
+            </a>
           </div>
         </div>
+
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#f5f7fb] to-transparent z-10" />
       </section>
 
-      {/* TRANSIÇÃO (invertida, desvanece para branco) */}
-      <section className="relative h-[160px] -mt-px">
-        <AnimatedWavesLite
-          invert
-          layers={10}
-          gradientFrom="#ffd1f7"
-          gradientTo="#bfe5ff"
-          height={260}
-          quality={1}
-          fadeEdge="bottom"
-          fadeSize={220}
-        />
-      </section>
-      <main className="mx-auto max-w-6xl px-6 py-2"> {/* Reduced py-16 to py-8 */}
-        <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-3 xl:grid-cols-3 place-items-center -mt-24"> {/* Reduced gap-10 to gap-8 and increased -mt-12 to -mt-24 */}
-          {cards.map((c, i) => (
-            <ProfileCard
-              key={i}
-              className="pc-compact"
-              showUserInfo
-              enableTilt
-              enableMobileTilt={false}
-              {...c}
-            />
-          ))}
-        </div>
+      {/* ── METHOD SECTION ── */}
+      <MethodSection />
+
+      {/* ── SERVICES SECTION ── */}
+      <ServicesSection />
+
+      {/* ── MAIN CONTENT ── */}
+      <main className="mx-auto max-w-6xl px-6 py-2">
         <ChatFAQ />
         <div className="mt-0">
           <SmartComposer
-            whatsappNumber="351912345678" // opcional: sem o '+'
-            emailTo="bundlr.solutions@gmail.com" // opcional
-            scheduleUrl="/contact" // opcional (acrescenta ?note=mensagem)
+            whatsappNumber="351912345678"
+            emailTo="bundlr.solutions@gmail.com"
+            scheduleUrl="/contact"
           />
         </div>
         <RecommendedBundles selection={{ tag: "Destaque" }} />
-        
       </main>
-      
+
       <AnimatedFooter
-          slogan="Ideias em pacote. Resultados sem stress."
-          subline="BUNDLR — Design & TechSolutions."
-        />
+        slogan="Ideias em pacote. Resultados sem stress."
+        subline="BUNDLR — Design & TechSolutions."
+      />
     </div>
   );
 }
