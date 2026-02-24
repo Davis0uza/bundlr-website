@@ -16,8 +16,27 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bundlr | Design e Informática",
-  description: "Group of Design and TechSolutions",
+  title: "Bundlr | Creative Studio — Design, IA & Tech Solutions",
+  description: "Simplificamos o seu trabalho digital. Especialistas em Design UI/UX, Automações com IA, Nex.js e Marketing Digital. Soluções premium para escalar o seu negócio.",
+  keywords: ["Design Digital", "Marketing", "Automação IA", "Web Development", "Next.js", "Bundlr", "Branding"],
+  authors: [{ name: "Bundlr Team" }],
+  openGraph: {
+    title: "Bundlr | Design e Soluções Tecnológicas",
+    description: "Ideias em pacote. Resultados sem stress. Especialistas em levar o seu negócio ao próximo nível digital.",
+    url: "https://bundlr.pt",
+    siteName: "Bundlr",
+    locale: "pt_PT",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Bundlr | Creative Studio",
+    description: "Especialistas em Design, IA e Desenvolvimento Web.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  }
 };
 
 export default function RootLayout({
@@ -26,7 +45,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-PT">
       <body
         className={`${outfit.variable} ${geistMono.variable} antialiased`}
       >
