@@ -43,7 +43,7 @@ export default function HomeClient() {
         <div className="absolute inset-0 z-[5] backdrop-blur-sm bg-white/25" />
 
         {/* Content overlay */}
-        <div className="relative z-10 mx-auto flex min-h-[620px] md:min-h-[700px] max-w-6xl flex-col items-center justify-center px-6 text-center">
+        <div className="relative z-20 mx-auto flex min-h-[620px] md:min-h-[700px] max-w-6xl flex-col items-center justify-center px-6 text-center">
           {/* Centered logo */}
           <Link href="/">
             <Image
@@ -126,7 +126,7 @@ export default function HomeClient() {
         </div>
 
         {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#f5f7fb] to-transparent z-10" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#f5f7fb] to-transparent z-10 pointer-events-none" />
       </section>
 
       {/* ── METHOD SECTION ── */}
