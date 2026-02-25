@@ -5,6 +5,7 @@ export default function robots(): MetadataRoute.Robots {
         rules: {
             userAgent: '*',
             allow: '/',
+            crawlDelay: 10,
         },
         sitemap: 'https://bundlr.pt/sitemap.xml',
     }

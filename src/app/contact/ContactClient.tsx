@@ -6,6 +6,7 @@ import ServicesNavPage3 from "@/components/ServicesNavPage3";
 import AnimatedFooter from "@/components/AnimatedFooter";
 import SmartComposer from "@/components/SmartComposer";
 import ContactForm from "@/components/ContactForm";
+import { ClipboardList } from "lucide-react";
 import LavaBubbles from "@/components/LavaBubbles";
 import { Metadata } from "next";
 
@@ -60,13 +61,10 @@ export default function Page3() {
               }}
             >
               <span className="tracking-wide">COMEÇAR</span>
-              <Image
-                src="/Icons/form.svg"
-                alt=""
-                width={20}
-                height={20}
+              <ClipboardList
+                size={20}
                 aria-hidden
-                className="transition-transform group-hover:translate-x-0.5"
+                className="text-slate-700 transition-transform group-hover:translate-x-0.5"
               />
             </Link>
           </div>

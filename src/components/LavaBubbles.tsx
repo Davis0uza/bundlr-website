@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useEffect } from "react";
 
 interface Bubble {
   id: number;
@@ -36,7 +36,9 @@ function lerpColorDark(t: number): string {
 }
 
 export default function LavaBubbles() {
-  const bubbles = useMemo<Bubble[]>(() => {
+  const [bubbles, setBubbles] = useState<Bubble[]>([]);
+
+  useEffect(() => {
     const arr: Bubble[] = [];
     for (let i = 0; i < BUBBLE_COUNT; i++) {
       arr.push({
@@ -45,15 +47,17 @@ export default function LavaBubbles() {
         endSize: 120 + Math.random() * 140,
         left: Math.random() * 100,
         delay: Math.random() * -60,
-        duration: 35 + Math.random() * 30, // Slightly faster 35-65s
+        duration: 35 + Math.random() * 30,
         wobbleAmp: 40 + Math.random() * 80,
-        morphDuration: 3 + Math.random() * 5, // Faster morphing
+        morphDuration: 3 + Math.random() * 5,
         hue: Math.random(),
         opacity: 0.15 + Math.random() * 0.4,
       });
     }
-    return arr;
+    setBubbles(arr);
   }, []);
+
+  if (bubbles.length === 0) return null;
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">

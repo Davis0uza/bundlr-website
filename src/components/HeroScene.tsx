@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float } from "@react-three/drei";
 import * as THREE from "three";
@@ -102,8 +102,9 @@ function SlimeModel() {
 /* ── Ambient particles ── */
 function Particles({ count = 100 }: { count?: number }) {
   const points = useRef<THREE.Points>(null);
+  const [particleData, setParticleData] = useState<{ positions: Float32Array; sizes: Float32Array } | null>(null);
 
-  const [positions, sizes] = useMemo(() => {
+  useEffect(() => {
     const pos = new Float32Array(count * 3);
     const sz = new Float32Array(count);
     for (let i = 0; i < count; i++) {
@@ -112,13 +113,17 @@ function Particles({ count = 100 }: { count?: number }) {
       pos[i * 3 + 2] = (Math.random() - 0.5) * 10;
       sz[i] = Math.random() * 2 + 0.5;
     }
-    return [pos, sz];
+    setParticleData({ positions: pos, sizes: sz });
   }, [count]);
 
   useFrame((state) => {
     if (!points.current) return;
     points.current.rotation.y = state.clock.getElapsedTime() * 0.015;
   });
+
+  if (!particleData) return null;
+
+  const { positions, sizes } = particleData;
 
   return (
     <points ref={points}>

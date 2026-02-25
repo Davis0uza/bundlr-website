@@ -74,7 +74,7 @@ function ServiceCard({
                     {/* Round icon container — pink background */}
                     <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#ffeaf2] transition-all duration-300 group-hover:bg-[#ffd7e6] group-hover:scale-125">
                         <Image
-                            src={hover ? `${service.gif}?t=${Date.now()}` : service.icon}
+                            src={hover ? service.gif : service.icon}
                             alt={service.label}
                             width={28}
                             height={28}
