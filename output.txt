@@ -1,0 +1,49 @@
+ Volume in drive C has no label.
+ Volume Serial Number is 4A16-91DD
+
+ Directory of C:\Users\Utilizador\Documents\GitHub\bundlr-website\public
+
+23/02/2026  16:43               880 blank.png
+23/02/2026  16:43            16ÿ576 compass.png
+23/02/2026  16:43               391 file.svg
+23/02/2026  16:43            10ÿ035 gear.png
+23/02/2026  16:43             1ÿ035 globe.svg
+23/02/2026  16:43            10ÿ249 log.svg
+23/02/2026  16:43            32ÿ625 logo.png
+23/02/2026  16:43             1ÿ375 next.svg
+23/02/2026  16:43            27ÿ922 rocket.png
+23/02/2026  16:43           108ÿ848 swipe.png
+23/02/2026  16:43               128 vercel.svg
+23/02/2026  16:43               385 window.svg
+              12 File(s)        210ÿ449 bytes
+
+ Directory of C:\Users\Utilizador\Documents\GitHub\bundlr-website\public\Icons
+
+23/02/2026  16:43             3ÿ515 agendar.svg
+23/02/2026  16:43           248ÿ674 apps.gif
+23/02/2026  16:43            25ÿ373 apps.png
+23/02/2026  16:43           173ÿ528 contactar.gif
+23/02/2026  16:43            22ÿ331 contactar.png
+23/02/2026  16:43           255ÿ408 design.gif
+23/02/2026  16:43            27ÿ525 design.png
+23/02/2026  16:43         1ÿ111ÿ727 form.svg
+23/02/2026  16:43           144ÿ095 ia.gif
+23/02/2026  16:43            23ÿ566 ia.png
+23/02/2026  16:43           402ÿ973 marketing.gif
+23/02/2026  16:43            24ÿ145 marketing.png
+23/02/2026  16:43           212ÿ947 web.gif
+23/02/2026  16:43            12ÿ026 web.png
+              14 File(s)      2ÿ687ÿ833 bytes
+
+ Directory of C:\Users\Utilizador\Documents\GitHub\bundlr-website\public\images
+
+23/02/2026  16:43           248ÿ141 AIimage.png
+23/02/2026  16:43         1ÿ595ÿ571 appimage.png
+23/02/2026  16:43           469ÿ526 designimage_Prancheta1.png
+23/02/2026  16:43           665ÿ351 marketingimage.png
+23/02/2026  16:43         1ÿ375ÿ402 webimage1.png
+               5 File(s)      4ÿ353ÿ991 bytes
+
+     Total Files Listed:
+              31 File(s)      7ÿ252ÿ273 bytes
+               0 Dir(s)  148ÿ576ÿ108ÿ544 bytes free
