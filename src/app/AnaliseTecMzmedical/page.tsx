@@ -22,6 +22,7 @@ import {
     CheckCircle2,
     User,
     Download,
+    LucideIcon,
 } from "lucide-react";
 import "./AnaliseTecMzmedical.css";
 
@@ -32,7 +33,7 @@ interface Service {
     descricao: string;
     valorUnico: number;
     mensalidade: number;
-    icon: React.ElementType;
+    icon: LucideIcon;
     category: "improvement" | "retention";
 }
 
