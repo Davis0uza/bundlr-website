@@ -42,9 +42,9 @@ const SERVICES: Service[] = [
         id: "design",
         titulo: "Novo Website Moderno",
         descricao:
-            "Novo webiste em next js, fluido moderno e eficaz, reestruturação e optimização do fluxo de navegação. (Anualidade de 180€ associada a alojamento)",
+            "Novo webiste em next js, fluido moderno e eficaz, reestruturação e optimização do fluxo de navegação. (Anualidade de 180€ associada a alojamento, foi dividida em 6x 30€, tem de ser paga anualmente)",
         valorUnico: 650,
-        mensalidade: 15,
+        mensalidade: 30,
         icon: Paintbrush,
         category: "improvement",
     },
