@@ -40,11 +40,11 @@ interface Service {
 const SERVICES: Service[] = [
     {
         id: "design",
-        titulo: "Melhorias de Design e Responsividade",
+        titulo: "Novo Website Moderno",
         descricao:
-            "Otimização visual e técnica para melhorar fluidez e garantir boa experiência em Mobile/Tablet/PC, reduzindo o impacto do carregamento pesado.",
-        valorUnico: 326,
-        mensalidade: 0,
+            "Novo webiste em next js, fluido moderno e eficaz, reestruturação e optimização do fluxo de navegação. (Anualidade de 180€ associada a alojamento)",
+        valorUnico: 650,
+        mensalidade: 15,
         icon: Paintbrush,
         category: "improvement",
     },
@@ -80,9 +80,29 @@ const SERVICES: Service[] = [
     },
     {
         id: "login",
-        titulo: "Login Google (Registos Facilitados)",
+        titulo: "Módulo de Autenticação Social – Google",
         descricao:
-            "Autenticação com Google para reduzir fricção no registo/login, aumentar confiança e diminuir desistências na área de cliente.",
+            "Implementação e integração de funcionalidades avançadas no website, com foco em performance, segurança e experiência de utilização. O serviço inclui configuração técnica, adaptação ao sistema existente, testes, otimização, reforço de segurança e acompanhamento inicial para garantir estabilidade, fiabilidade e uma utilização eficiente da solução.",
+        valorUnico: 196,
+        mensalidade: 72,
+        icon: LogIn,
+        category: "retention",
+    },
+    {
+        id: "login-facebook",
+        titulo: "Módulo de Autenticação Social – Facebook",
+        descricao:
+            "Implementação e integração de funcionalidades avançadas no website, com foco em performance, segurança e experiência de utilização. O serviço inclui configuração técnica, adaptação ao sistema existente, testes, otimização, reforço de segurança e acompanhamento inicial para garantir estabilidade, fiabilidade e uma utilização eficiente da solução.",
+        valorUnico: 196,
+        mensalidade: 72,
+        icon: LogIn,
+        category: "retention",
+    },
+    {
+        id: "login-apple",
+        titulo: "Módulo de Autenticação Social – Apple",
+        descricao:
+            "Implementação e integração de funcionalidades avançadas no website, com foco em performance, segurança e experiência de utilização. O serviço inclui configuração técnica, adaptação ao sistema existente, testes, otimização, reforço de segurança e acompanhamento inicial para garantir estabilidade, fiabilidade e uma utilização eficiente da solução.",
         valorUnico: 196,
         mensalidade: 72,
         icon: LogIn,
@@ -101,7 +121,7 @@ const SERVICES: Service[] = [
 ];
 
 const DISCOUNT_PER_SERVICE = 2;
-const MAX_DISCOUNT = 12;
+const MAX_DISCOUNT = 16;
 
 const TERMS_TEXT = `O presente orçamento é válido pelo prazo de trinta (30) dias a contar da data da sua emissão. A aceitação do mesmo implica concordância com as condições aqui descritas.
 
@@ -642,7 +662,7 @@ export default function AnaliseTecMzmedicalPage() {
                     <p className="analise-subtitle">
                         Selecione os serviços que pretende implementar. Quanto mais serviços
                         escolher, maior o seu desconto — até{" "}
-                        <strong>12% sobre o valor único e mensalidades</strong>.
+                        <strong>16% sobre o valor único e mensalidades</strong>.
                     </p>
                 </motion.header>
 
@@ -656,8 +676,8 @@ export default function AnaliseTecMzmedicalPage() {
                     <p>
                         🚀 Cada serviço selecionado acrescenta <strong>2% de desconto</strong>{" "}
                         sobre o valor único <strong>e sobre as mensalidades</strong>. Selecione
-                        todos os 6 para obter o máximo de{" "}
-                        <strong>12% de desconto em tudo</strong>!
+                        todos os 8 para obter o máximo de{" "}
+                        <strong>16% de desconto em tudo</strong>!
                     </p>
                 </motion.div>
 
