@@ -662,9 +662,22 @@
 }
 
 .form-field input:focus {
-    border-color: #0ea5e9;
-    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
     background: #fff;
+}
+
+.form-field input.error {
+    border-color: #ef4444;
+    background: #fef2f2;
+}
+
+.field-error {
+    font-size: 0.75rem;
+    color: #ef4444;
+    font-weight: 500;
+    margin-top: 0.25rem;
+    display: block;
 }
 
 /* ── Terms ── */
