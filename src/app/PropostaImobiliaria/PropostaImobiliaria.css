@@ -732,6 +732,26 @@
     font-weight: 800;
 }
 
+.terms-info-box {
+    background: rgba(2, 132, 199, 0.05);
+    padding: 0.85rem 1.25rem;
+    border-radius: 12px;
+    margin-bottom: 1.25rem;
+    border: 1px dashed rgba(2, 132, 199, 0.2);
+}
+
+.terms-info-box p {
+    font-size: 0.85rem;
+    color: #1e293b;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.terms-info-box strong {
+    color: #0284c7;
+    font-weight: 700;
+}
+
 /* ── Buttons ── */
 .modal-accept-btn {
     width: 100%;
