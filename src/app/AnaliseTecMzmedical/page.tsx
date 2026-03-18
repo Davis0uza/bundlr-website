@@ -42,9 +42,9 @@ const SERVICES: Service[] = [
         id: "design",
         titulo: "Novo Website Moderno",
         descricao:
-            "Novo webiste em next js, fluido moderno e eficaz, reestruturação e optimização do fluxo de navegação. (Anualidade de 180€ associada a alojamento, foi dividida em 6x 30€, tem de ser paga anualmente)",
-        valorUnico: 650,
-        mensalidade: 30,
+            "Novo webiste em next js, fluido moderno e eficaz, reestruturação e optimização do fluxo de navegação. 🎉 Foi aplicado um desconto extra e incluída a OFERTA do Módulo de Autenticação Social – Apple.",
+        valorUnico: 350,
+        mensalidade: 0,
         icon: Paintbrush,
         category: "improvement",
     },
@@ -100,11 +100,11 @@ const SERVICES: Service[] = [
     },
     {
         id: "login-apple",
-        titulo: "Módulo de Autenticação Social – Apple",
+        titulo: "Módulo de Autenticação Social – Apple (OFERTA)",
         descricao:
             "Implementação e integração de funcionalidades avançadas no website, com foco em performance, segurança e experiência de utilização. O serviço inclui configuração técnica, adaptação ao sistema existente, testes, otimização, reforço de segurança e acompanhamento inicial para garantir estabilidade, fiabilidade e uma utilização eficiente da solução.",
-        valorUnico: 196,
-        mensalidade: 72,
+        valorUnico: 0,
+        mensalidade: 0,
         icon: LogIn,
         category: "retention",
     },
