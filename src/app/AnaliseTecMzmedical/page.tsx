@@ -32,6 +32,7 @@ interface Service {
     titulo: string;
     descricao: string;
     valorUnico: number;
+    valorAntigo?: number;
     mensalidade: number;
     icon: LucideIcon;
     category: "improvement" | "retention";
@@ -42,9 +43,10 @@ const SERVICES: Service[] = [
         id: "design",
         titulo: "Novo Website Moderno",
         descricao:
-            "Novo webiste em next js, fluido moderno e eficaz, reestruturação e optimização do fluxo de navegação. 🎉 Foi aplicado um desconto extra e incluída a OFERTA do Módulo de Autenticação Social – Apple.",
+            "Novo webiste em next js, fluido moderno e eficaz, reestruturação e optimização do fluxo de navegação. (Anualidade de 180€ associada a alojamento, foi dividida em 6x 30€, tem de ser paga anualmente) 🎉 Inclui a OFERTA do Módulo de Autenticação Social – Apple.",
         valorUnico: 350,
-        mensalidade: 0,
+        valorAntigo: 650,
+        mensalidade: 30,
         icon: Paintbrush,
         category: "improvement",
     },
@@ -1166,6 +1168,11 @@ function ServiceCard({
             <div className="card-prices">
                 <div className="price-tag unico">
                     <span className="price-label">Único:</span>
+                    {service.valorAntigo && (
+                        <span style={{ textDecoration: "line-through", marginRight: "6px", opacity: 0.6, fontSize: "0.9em" }}>
+                            {service.valorAntigo}€
+                        </span>
+                    )}
                     {service.valorUnico}€
                 </div>
                 <div className="price-tag mensal">
