@@ -55,7 +55,7 @@ export default function PortfolioSection() {
         </motion.div>
 
         {/* Vertical Stack of Full-Width Cards */}
-        <div className="flex flex-col gap-12">
+        <div className="mx-auto flex max-w-4xl flex-col gap-12">
           {PORTFOLIO_ITEMS.map((item, index) => (
             <motion.div
               key={item.name}
