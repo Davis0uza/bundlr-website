@@ -11,6 +11,7 @@ import RecommendedBundles from "@/components/RecommendedBundles";
 import AnimatedFooter from "@/components/AnimatedFooter";
 import ServicesSection from "@/components/ServicesSection";
 import MethodSection from "@/components/MethodSection";
+import PortfolioSection from "@/components/PortfolioSection";
 import HeroSceneWrapper from "@/components/HeroSceneWrapper";
 import RotatingHeroTitle from "@/components/RotatingHeroTitle";
 
@@ -131,6 +132,9 @@ export default function HomeClient() {
 
       {/* ── METHOD SECTION ── */}
       <MethodSection />
+
+      {/* ── PORTFOLIO SECTION ── */}
+      <PortfolioSection />
 
       {/* ── SERVICES SECTION ── */}
       <ServicesSection />
