@@ -70,7 +70,7 @@ export default function PortfolioSection() {
               className="group relative h-auto w-full overflow-hidden rounded-3xl border border-[#efd1f4]/40 bg-white shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-[#f4b8d0]/15"
             >
               {/* Main Button Image (Full Width) */}
-              <div className="aspect-[21/9] md:aspect-[24/7] relative w-full overflow-hidden">
+              <div className="relative w-full overflow-hidden" style={{ aspectRatio: '2846 / 1146' }}>
                 <Image
                   src={item.buttonImage}
                   alt={`${item.name} portfolio cover`}
