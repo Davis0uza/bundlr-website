@@ -188,7 +188,7 @@ No caso da seleção do Pacote 3 (Crescimento Estratégico), os serviços mensai
 
 A aceitação e assinatura do presente orçamento implicam concordância integral com os termos e condições aqui descritos.`;
 
-/* ══════════════ PDF Generator ══════════════ */
+/* ══════════════ PDF Generator (2 Pages: Page 1 Pricing, Page 2 Contract Terms) ══════════════ */
 async function generateInvoicePDFDoc(
     clientData: { nome: string; email: string; nif: string; morada: string },
     selectedPackage: Package,
@@ -202,10 +202,13 @@ async function generateInvoicePDFDoc(
     const { jsPDF } = await import("jspdf");
     const doc = new jsPDF("p", "mm", "a4");
     const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
     const margin = 20;
     const contentW = pageW - margin * 2;
     let y = 20;
+    const today = new Date().toLocaleDateString("pt-PT");
 
+    /* ════════════ PAGE 1: Proposal Summary & Pricing ════════════ */
     // Header Logo
     try {
         const img = new Image();
@@ -237,7 +240,6 @@ async function generateInvoicePDFDoc(
 
     doc.setFontSize(8);
     doc.setTextColor(100, 116, 139);
-    const today = new Date().toLocaleDateString("pt-PT");
     doc.text(`Data: ${today}`, pageW - margin, y + 8, { align: "right" });
     doc.text("Ref: MZ-2026-B2B", pageW - margin, y + 13, { align: "right" });
 
@@ -398,18 +400,124 @@ async function generateInvoicePDFDoc(
         bankY += 5;
     });
 
-    y += 40;
-
-    // Signatures
-    doc.setDrawColor(200, 200, 200);
-    doc.setLineWidth(0.3);
-    doc.line(margin, y, margin + 70, y);
-    doc.setFontSize(7);
+    // Page 1 Footer
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
     doc.setTextColor(150);
-    doc.text("Assinatura do Cliente", margin, y + 4);
+    doc.text("Página 1 de 2", pageW - margin, pageH - 12, { align: "right" });
+    doc.text("Mz Medical — Proposta Comercial & Adjudicação", margin, pageH - 12);
 
-    doc.line(pageW - margin - 70, y, pageW - margin, y);
-    doc.text("Data de Aceitação", pageW - margin - 70, y + 4);
+    /* ════════════ PAGE 2: Accepted Terms & Legal Conditions ════════════ */
+    doc.addPage();
+    y = 20;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.setTextColor(6, 78, 59);
+    doc.text("Termos & Condições de Adjudicação", margin, y);
+    y += 6;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.5);
+    doc.setTextColor(100, 116, 139);
+    doc.text("Contrato de Prestação de Serviços de Otimização B2B · mzmedical.com.br", margin, y);
+    y += 6;
+
+    doc.setDrawColor(5, 150, 105);
+    doc.setLineWidth(0.8);
+    doc.line(margin, y, pageW - margin, y);
+    y += 10;
+
+    const sections = [
+        {
+            title: "1. Âmbito do Projeto e Validade da Proposta",
+            text: "O presente orçamento é válido pelo prazo de trinta (30) dias a contar da data da sua emissão. A aceitação do orçamento constitui compromisso formal para a execução do plano selecionado (" + selectedPackage.tier + " — " + selectedPackage.title + ")."
+        },
+        {
+            title: "2. Prazos de Execução e Revisões",
+            text: "O prazo estimado para a entrega da totalidade do projeto é de " + selectedPackage.timeline + ", contado a partir da confirmação do pagamento inicial previsto. Após a entrega final, o prestador compromete-se a realizar revisões e ajustes solicitados pelo cliente no prazo máximo de dez (10) dias úteis."
+        },
+        {
+            title: "3. Faturação e Enquadramento Fiscal",
+            text: "Os serviços contratados serão faturados através do trabalhador independente Pedro Duarte de Almeida Alves Costa, NIF 231798423, enquadrado no regime de isenção de IVA nos termos do artigo 53.º do Código do IVA."
+        },
+        {
+            title: "4. Modalidade de Pagamento e Caução Inicial",
+            text: paymentMode === "half"
+                ? "O pagamento é efetuado na modalidade 50/50: 50% do valor total do pacote selecionado no ato de adjudicação e os restantes 50% na entrega final dos trabalhos. Aquando da adjudicação, é igualmente cobrada a caução do 1.º mês dos serviços mensais adicionais selecionados."
+                : "O pagamento é efetuado na modalidade Mensal em " + selectedPackage.monthsCount + " prestações de " + formatNum(selectedPackage.monthlyPayment) + " €/mês. No ato de adjudicação é cobrada a 1.ª prestação acrescida da caução do 1.º mês dos serviços mensais adicionais selecionados."
+        },
+        {
+            title: "5. Serviços Mensais Recorrentes e Rescisão Flexível",
+            text: "Os serviços mensais adicionais de manutenção e cibersegurança entram em ativação apenas após a conclusão da auditoria e implementação inicial. O cliente pode rescindir livremente a subscrição recorrente a qualquer momento até ao final de cada mês." + (selectedPackage.id === "pacote-3" ? " Como contratou o Pacote 3, os serviços mensais beneficiam de 0€ durante os primeiros 3 meses (isento de caução)." : "")
+        },
+        {
+            title: "6. Sigilo e Confidencialidade",
+            text: "Ambas as partes comprometem-se a manter total sigilo sobre todos os dados técnicos, credenciais de acesso, estratégias de SEO e informações comerciais trocadas no âmbito da execução do presente projeto."
+        }
+    ];
+
+    sections.forEach((sec) => {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9.5);
+        doc.setTextColor(6, 78, 59);
+        doc.text(sec.title, margin, y);
+        y += 5;
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8.2);
+        doc.setTextColor(51, 65, 85);
+        const splitLines = doc.splitTextToSize(sec.text, contentW);
+        doc.text(splitLines, margin, y);
+        y += splitLines.length * 4.2 + 5;
+    });
+
+    y += 4;
+
+    // Signatures Box
+    doc.setFillColor(248, 250, 249);
+    doc.roundedRect(margin, y, contentW, 36, 3, 3, "F");
+    doc.setDrawColor(203, 213, 225);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(margin, y, contentW, 36, 3, 3, "S");
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    doc.setTextColor(6, 78, 59);
+    doc.text("Aceitação Formal dos Termos & Condições Contratuais", margin + 6, y + 6);
+
+    const sigY = y + 24;
+    doc.setDrawColor(100, 116, 139);
+    doc.setLineWidth(0.4);
+
+    // Client signature line
+    doc.line(margin + 10, sigY, margin + 75, sigY);
+    doc.setFontSize(7.5);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(51, 65, 85);
+    doc.text("Assinatura do Cliente / Carimbo", margin + 10, sigY + 4);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7);
+    doc.setTextColor(100, 116, 139);
+    doc.text(`Cliente: ${clientData.nome}`, margin + 10, sigY + 8);
+
+    // Provider signature line
+    doc.line(pageW - margin - 75, sigY, pageW - margin - 10, sigY);
+    doc.setFontSize(7.5);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(51, 65, 85);
+    doc.text("Pedro Duarte Costa (Prestador)", pageW - margin - 75, sigY + 4);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7);
+    doc.setTextColor(100, 116, 139);
+    doc.text(`Data de Aceitação: ${today}`, pageW - margin - 75, sigY + 8);
+
+    // Page 2 Footer
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(150);
+    doc.text("Página 2 de 2", pageW - margin, pageH - 12, { align: "right" });
+    doc.text("Mz Medical — Termos & Condições Contratuais", margin, pageH - 12);
 
     return doc;
 }
@@ -1172,7 +1280,7 @@ export default function AnaliseTecMzmedicalPage() {
                                 </div>
                                 <h2 className="modal-title">E-mail Enviado com Sucesso!</h2>
                                 <p className="modal-subtitle" style={{ fontSize: "0.95rem", lineHeight: 1.6, marginTop: 8 }}>
-                                    Enviámos a proposta comercial com a <strong>fatura PDF em anexo</strong> e as instruções de pagamento para o e-mail:
+                                    Enviámos a proposta comercial em PDF (Página 1: Orçamento + Página 2: Termos &amp; Contrato) para o e-mail:
                                     <br />
                                     <strong style={{ color: "#059669", fontSize: "1.05rem" }}>{formData.email}</strong>
                                 </p>
@@ -1186,7 +1294,7 @@ export default function AnaliseTecMzmedicalPage() {
 
                             <button className="modal-download-btn" onClick={handleDownloadPDF} style={{ padding: "1rem" }}>
                                 <Download size={20} />
-                                Descarregar Fatura Digital em PDF
+                                Descarregar Fatura Digital em PDF (2 Páginas)
                             </button>
                         </motion.div>
                     </motion.div>
