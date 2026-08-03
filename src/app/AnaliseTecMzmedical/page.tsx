@@ -8,8 +8,6 @@ import {
     Clock,
     ChevronDown,
     FileText,
-    Copy,
-    CheckCircle2,
     User,
     Download,
     X,
@@ -191,7 +189,7 @@ No caso da seleção do Pacote 3 (Crescimento Estratégico), os serviços mensai
 A aceitação e assinatura do presente orçamento implicam concordância integral com os termos e condições aqui descritos.`;
 
 /* ══════════════ PDF Generator ══════════════ */
-async function generateInvoicePDF(
+async function generateInvoicePDFDoc(
     clientData: { nome: string; email: string; nif: string; morada: string },
     selectedPackage: Package,
     activeMonthlyServices: { title: string; price: number; isFreeOffer: boolean }[],
@@ -413,7 +411,7 @@ async function generateInvoicePDF(
     doc.line(pageW - margin - 70, y, pageW - margin, y);
     doc.text("Data de Aceitação", pageW - margin - 70, y + 4);
 
-    doc.save(`Orcamento_MzMedical_${clientData.nome.replace(/\s+/g, "_")}.pdf`);
+    return doc;
 }
 
 function formatNum(v: number) {
@@ -434,7 +432,6 @@ export default function AnaliseTecMzmedicalPage() {
 
     const [step, setStep] = useState<null | "form" | "terms" | "success">(null);
     const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
-    const [copiedField, setCopiedField] = useState<string | null>(null);
 
     const [formData, setFormData] = useState({
         nome: "",
@@ -520,6 +517,24 @@ export default function AnaliseTecMzmedicalPage() {
     const handleAcceptTermsAndSendEmail = async () => {
         setIsSendingEmail(true);
         try {
+            let pdfBase64 = "";
+            try {
+                const doc = await generateInvoicePDFDoc(
+                    formData,
+                    selectedPackage,
+                    activeMonthlyServicesDetails,
+                    paymentMode,
+                    totalAmount,
+                    upfrontAmount,
+                    packageUpfront,
+                    monthlyCaucao
+                );
+                const dataUri = doc.output("datauristring");
+                pdfBase64 = dataUri.split(",")[1] || "";
+            } catch (pdfErr) {
+                console.error("Erro ao gerar PDF para anexo:", pdfErr);
+            }
+
             await fetch("/api/send-proposal", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -531,6 +546,7 @@ export default function AnaliseTecMzmedicalPage() {
                     monthlyCaucao,
                     totalMonthlyFee,
                     activeMonthlyServices: activeMonthlyServicesDetails,
+                    pdfBase64
                 }),
             });
         } catch (err) {
@@ -543,14 +559,8 @@ export default function AnaliseTecMzmedicalPage() {
 
     const closeModal = () => setStep(null);
 
-    const copyToClipboard = (text: string, field: string) => {
-        navigator.clipboard.writeText(text);
-        setCopiedField(field);
-        setTimeout(() => setCopiedField(null), 2000);
-    };
-
     const handleDownloadPDF = useCallback(async () => {
-        await generateInvoicePDF(
+        const doc = await generateInvoicePDFDoc(
             formData,
             selectedPackage,
             activeMonthlyServicesDetails,
@@ -560,6 +570,7 @@ export default function AnaliseTecMzmedicalPage() {
             packageUpfront,
             monthlyCaucao
         );
+        doc.save(`Orcamento_MzMedical_${formData.nome.replace(/\s+/g, "_")}.pdf`);
     }, [formData, selectedPackage, activeMonthlyServicesDetails, paymentMode, totalAmount, upfrontAmount, packageUpfront, monthlyCaucao]);
 
     return (
@@ -1103,7 +1114,7 @@ export default function AnaliseTecMzmedicalPage() {
                                 {isSendingEmail ? (
                                     <>
                                         <Loader2 size={18} className="animate-spin" />
-                                        A enviar proposta...
+                                        A gerar PDF e enviar e-mail...
                                     </>
                                 ) : (
                                     <>
@@ -1155,31 +1166,26 @@ export default function AnaliseTecMzmedicalPage() {
                                 </div>
                             </div>
 
-                            <div className="modal-header">
-                                <div className="modal-icon-wrap bank" style={{ background: "linear-gradient(135deg, #059669, #10b981)" }}>
-                                    <MailCheck size={28} />
+                            <div className="modal-header" style={{ paddingBottom: 0 }}>
+                                <div className="modal-icon-wrap bank" style={{ background: "linear-gradient(135deg, #059669, #10b981)", width: 64, height: 64, margin: "0 auto 12px" }}>
+                                    <MailCheck size={32} />
                                 </div>
                                 <h2 className="modal-title">E-mail Enviado com Sucesso!</h2>
-                                <p className="modal-subtitle">
-                                    Enviámos uma cópia da proposta comercial e dados bancários para <strong>{formData.email}</strong>
+                                <p className="modal-subtitle" style={{ fontSize: "0.95rem", lineHeight: 1.6, marginTop: 8 }}>
+                                    Enviámos a proposta comercial com a <strong>fatura PDF em anexo</strong> e as instruções de pagamento para o e-mail:
+                                    <br />
+                                    <strong style={{ color: "#059669", fontSize: "1.05rem" }}>{formData.email}</strong>
                                 </p>
                             </div>
 
-                            <div className="bank-details">
-                                <div className="bank-row highlight">
-                                    <span className="bank-label">Montante Inicial a Pagar</span>
-                                    <span className="bank-value big">{formatNum(upfrontAmount)} €</span>
-                                </div>
-                                <BankRow label="IBAN CGD" value="PT50003502100002261490090" copyable onCopy={copyToClipboard} copiedField={copiedField} />
-                                <BankRow label="Titular" value="Pedro Duarte Costa" copyable={false} onCopy={copyToClipboard} copiedField={copiedField} />
+                            <div className="bank-note" style={{ marginTop: 24, marginBottom: 24, textAlign: "center", padding: "1.25rem" }}>
+                                <p style={{ margin: 0, fontSize: "0.9rem", color: "#365d50" }}>
+                                    💡 Pode também guardar uma cópia da fatura digital em PDF diretamente no seu dispositivo.
+                                </p>
                             </div>
 
-                            <div className="bank-note">
-                                <p>📧 <strong>Consulte o seu e-mail:</strong> O resumo completo da adjudicação e as instruções para envio do comprovativo foram enviadas para <strong>{formData.email}</strong>.</p>
-                            </div>
-
-                            <button className="modal-download-btn" onClick={handleDownloadPDF}>
-                                <Download size={18} />
+                            <button className="modal-download-btn" onClick={handleDownloadPDF} style={{ padding: "1rem" }}>
+                                <Download size={20} />
                                 Descarregar Fatura Digital em PDF
                             </button>
                         </motion.div>
@@ -1191,31 +1197,3 @@ export default function AnaliseTecMzmedicalPage() {
 }
 
 /* ══════════════ Helper Component ══════════════ */
-function BankRow({
-    label,
-    value,
-    copyable,
-    onCopy,
-    copiedField,
-}: {
-    label: string;
-    value: string;
-    copyable: boolean;
-    onCopy: (text: string, field: string) => void;
-    copiedField: string | null;
-}) {
-    const fieldKey = label.toLowerCase();
-    return (
-        <div className="bank-row">
-            <span className="bank-label">{label}</span>
-            <div className="bank-value-wrap">
-                <span className="bank-value">{value}</span>
-                {copyable && (
-                    <button className="copy-btn" onClick={() => onCopy(value, fieldKey)}>
-                        {copiedField === fieldKey ? <CheckCircle2 size={14} /> : <Copy size={14} />}
-                    </button>
-                )}
-            </div>
-        </div>
-    );
-}

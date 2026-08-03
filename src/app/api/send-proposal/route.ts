@@ -9,7 +9,8 @@ export async function POST(req: Request) {
             paymentMode,
             upfrontAmount,
             monthlyCaucao,
-            activeMonthlyServices
+            activeMonthlyServices,
+            pdfBase64
         } = body;
 
         const apiKey = process.env.BREVO_API_KEY;
@@ -49,13 +50,13 @@ export async function POST(req: Request) {
             .header h1 { margin: 0; font-size: 22px; font-weight: 700; }
             .header p { margin: 5px 0 0; opacity: 0.9; font-size: 14px; }
             .content { padding: 30px 25px; }
+            .notice-box { background: #fffbeeb0; border: 1.5px solid #f59e0b; border-radius: 12px; padding: 16px 20px; margin: 20px 0; }
             .box { background: #f0fdf4; border: 1.5px solid #10b981; border-radius: 12px; padding: 20px; margin: 20px 0; }
             .box h3 { margin-top: 0; color: #064e3b; font-size: 16px; }
             .table-data { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 14px; }
             .table-data td { padding: 8px 0; border-bottom: 1px solid rgba(16, 185, 129, 0.15); }
             .bank-box { background: #f8faf9; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 20px; margin-top: 20px; }
             .bank-box h3 { margin-top: 0; color: #064e3b; font-size: 16px; }
-            .footer-note { background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 10px; padding: 15px; margin-top: 24px; font-size: 13px; color: #1e293b; }
             .footer { font-size: 12px; color: #64748b; text-align: center; padding: 20px; background: #f8faf9; border-top: 1px solid #e2e8f0; }
           </style>
         </head>
@@ -69,6 +70,20 @@ export async function POST(req: Request) {
               <p>Olá <strong>${clientData.nome}</strong>,</p>
               <p>Obrigado pela sua escolha. Confirmamos a receção do seu pedido de contratação para a otimização técnica, SEO e suporte B2B do site <strong>mzmedical.com.br</strong>.</p>
               
+              <p>📌 <strong>Em anexo a este e-mail encontra a Fatura Comercial em formato PDF com a discriminação completa do plano.</strong></p>
+
+              <div class="notice-box">
+                <p style="margin: 0; font-weight: bold; color: #92400e; font-size: 14px;">
+                  📩 ENVIO DE COMPROVATIVO &amp; NOTA IMPORTANTE:
+                </p>
+                <p style="margin: 6px 0 0 0; color: #b45309; font-size: 14px; line-height: 1.5;">
+                  Após efetuar a transferência bancária do montante inicial, por favor <strong>envie o comprovativo de transferência para <a href="mailto:bundlr.solutions@gmail.com" style="color: #059669; font-weight: bold; text-decoration: underline;">bundlr.solutions@gmail.com</a></strong>.
+                </p>
+                <p style="margin: 8px 0 0 0; color: #78350f; font-size: 12px; font-style: italic;">
+                  ⚠️ Este é um e-mail automático. Por favor, não responda diretamente a esta mensagem.
+                </p>
+              </div>
+
               <div class="box">
                 <h3>Resumo do Plano Selecionado</h3>
                 <table class="table-data">
@@ -88,11 +103,6 @@ export async function POST(req: Request) {
                 <p style="margin:6px 0;"><strong>Banco:</strong> Caixa Geral de Depósitos (CGD)</p>
                 <p style="margin:10px 0 0; color:#059669; font-weight:bold; font-size:15px;"><strong>Valor Inicial a Transferir:</strong> ${formatNum(upfrontAmount)} €</p>
               </div>
-
-              <div class="footer-note">
-                <p style="margin:0 0 8px 0;">📬 <strong>Envio de Comprovativo:</strong> Após efetuar a transferência bancária do montante inicial, por favor envie o comprovativo para <a href="mailto:bundlr.solutions@gmail.com" style="color:#059669; font-weight:bold; text-decoration:none;">bundlr.solutions@gmail.com</a>.</p>
-                <p style="margin:0; font-size:12px; color:#64748b;"><em>Nota: Este é um e-mail automático. Por favor, não responda diretamente a esta mensagem.</em></p>
-              </div>
             </div>
             <div class="footer">
               <p>Proposta Comercial Mz Medical · Válida por 30 Dias</p>
@@ -101,6 +111,13 @@ export async function POST(req: Request) {
         </body>
         </html>
         `;
+
+        const attachment = pdfBase64 ? [
+            {
+                name: `Orcamento_MzMedical_${clientData.nome.replace(/\s+/g, "_")}.pdf`,
+                content: pdfBase64
+            }
+        ] : undefined;
 
         const response = await fetch("https://api.brevo.com/v3/smtp/email", {
             method: "POST",
@@ -114,6 +131,7 @@ export async function POST(req: Request) {
                 to: [{ email: clientData.email, name: clientData.nome }],
                 subject: `Proposta Comercial & Adjudicação — ${selectedPackage.title} (${clientData.nome})`,
                 htmlContent: htmlContent,
+                attachment: attachment
             }),
         });
 
@@ -124,7 +142,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false, error: data }, { status: response.status });
         }
 
-        console.log("✅ Email enviado via Brevo com sucesso! Message ID:", data.messageId);
+        console.log("✅ Email com anexo PDF enviado via Brevo com sucesso! Message ID:", data.messageId);
         return NextResponse.json({ success: true, messageId: data.messageId });
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : "Erro no envio de e-mail";
