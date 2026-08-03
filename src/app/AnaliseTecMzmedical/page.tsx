@@ -3,187 +3,204 @@
 import { useState, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-    Paintbrush,
-    Search,
-    ShoppingCart,
-    Mail,
-    LogIn,
-    Bot,
-    Check,
     Sparkles,
-    Shield,
-    TrendingUp,
-    ArrowRight,
-    Percent,
-    X,
+    Check,
+    Clock,
+    ChevronDown,
     FileText,
-    Landmark,
     Copy,
     CheckCircle2,
     User,
     Download,
-    LucideIcon,
+    X,
+    ArrowRight,
+    ShieldCheck,
+    Lock,
+    Zap,
+    MailCheck,
+    Loader2
 } from "lucide-react";
 import "./AnaliseTecMzmedical.css";
 
-/* ══════════════ Data ══════════════ */
-interface Service {
+/* ══════════════ Data Structures ══════════════ */
+export interface Task {
     id: string;
-    titulo: string;
-    descricao: string;
-    valorUnico: number;
-    valorAntigo?: number;
-    mensalidade: number;
-    icon: LucideIcon;
-    category: "improvement" | "retention";
+    name: string;
+    price: number;
 }
 
-const SERVICES: Service[] = [
+export interface Package {
+    id: string;
+    tier: string;
+    title: string;
+    description: string;
+    totalPrice: number;
+    halfPayment: number;
+    monthlyPayment: number;
+    monthsCount: number;
+    timeline: string;
+    featured?: boolean;
+    includedSummary?: string[];
+    toggleButtonLabel: string;
+    allTasksCount: number;
+    tasks: Task[];
+}
+
+export interface MonthlyService {
+    id: string;
+    title: string;
+    description: string;
+    basePrice: number;
+    icon: typeof ShieldCheck;
+}
+
+/* ── Base Task Lists ── */
+const TASKS_P1: Task[] = [
+    { id: "p1-1", name: 'SEO homepage — título, meta, Open Graph', price: 75 },
+    { id: "p1-2", name: 'Remover "solicite cotação" em produtos com preço', price: 75 },
+    { id: "p1-3", name: 'Renomear variações "1/2/3" → nomes reais', price: 100 },
+    { id: "p1-4", name: "Corrigir links de banners para domínio próprio", price: 75 },
+    { id: "p1-5", name: "Hospedar documentos regulatórios no domínio", price: 100 },
+    { id: "p1-6", name: "Migração charset → UTF-8", price: 75 },
+    { id: "p1-7", name: "Meta tags otimizadas — top 15-20 páginas", price: 250 },
+    { id: "p1-8", name: "Schema markup (Product, Org, Breadcrumb)", price: 350 },
+    { id: "p1-9", name: "Google Search Console + Analytics", price: 100 },
+    { id: "p1-10", name: "Auditoria Core Web Vitals + otimização imagens", price: 200 },
+    { id: "p1-11", name: "Indicação de stock / prazo de entrega", price: 100 },
+    { id: "p1-12", name: "Atualização info de envio (transportadora)", price: 75 },
+];
+
+const TASKS_P2: Task[] = [
+    { id: "p2-1", name: "Registo ANVISA por produto", price: 300 },
+    { id: "p2-2", name: "Reescrita descrições + specs (20-25 produtos)", price: 700 },
+    { id: "p2-3", name: "Formulário de cotação RFQ dedicado", price: 350 },
+    { id: "p2-4", name: "Setup downloads manuais / fichas técnicas", price: 200 },
+    { id: "p2-5", name: "Descrições páginas de categoria (8-10)", price: 300 },
+    { id: "p2-6", name: "Auto-resposta WhatsApp fora de horário", price: 100 },
+    { id: "p2-7", name: "Auditoria navegação facetada / canonical", price: 200 },
+];
+
+const TASKS_P3: Task[] = [
+    { id: "p3-1", name: "Sistema conta B2B (preço por perfil, faturamento)", price: 500 },
+    { id: "p3-2", name: "Tabelas desconto por volume (top 15 SKUs)", price: 200 },
+    { id: "p3-3", name: "Estratégia conteúdo + 4-6 artigos", price: 450 },
+    { id: "p3-4", name: "Relatório análise competitiva", price: 250 },
+    { id: "p3-5", name: "Revisão conformidade LGPD", price: 100 },
+    { id: "p3-6", name: "Avaliação capacidades plataforma Tray", price: 150 },
+    { id: "p3-7", name: "Descrições produtos restantes (catálogo completo)", price: 350 },
+];
+
+/* ── Packages Definitions ── */
+const PACKAGES: Package[] = [
     {
-        id: "design",
-        titulo: "Novo Website Moderno",
-        descricao:
-            "Novo webiste em next js, fluido moderno e eficaz, reestruturação e optimização do fluxo de navegação. (Anualidade de 180€ associada a alojamento, foi dividida em 6x 30€, tem de ser paga anualmente) 🎉 Inclui a OFERTA do Módulo de Autenticação Social – Apple.",
-        valorUnico: 350,
-        valorAntigo: 650,
-        mensalidade: 30,
-        icon: Paintbrush,
-        category: "improvement",
+        id: "pacote-1",
+        tier: "Pacote 1",
+        title: "Correções Essenciais",
+        description: "Correções técnicas imediatas e fundação SEO.",
+        totalPrice: 1650,
+        halfPayment: 825,
+        monthlyPayment: 825,
+        monthsCount: 2,
+        timeline: "~2 meses",
+        toggleButtonLabel: "12 tarefas incluídas",
+        allTasksCount: 12,
+        tasks: TASKS_P1,
     },
     {
-        id: "seo",
-        titulo: "Reparação SEO",
-        descricao:
-            "Correção de falhas técnicas de indexação e otimização de palavras-chave para recuperar visibilidade orgânica e reforçar autoridade no Google.",
-        valorUnico: 184,
-        mensalidade: 0,
-        icon: Search,
-        category: "improvement",
+        id: "pacote-2",
+        tier: "Pacote 2",
+        title: "Otimização de Conversão",
+        description: "Conteúdo e ferramentas que removem barreiras B2B.",
+        totalPrice: 3800,
+        halfPayment: 1900,
+        monthlyPayment: 1267,
+        monthsCount: 3,
+        timeline: "~3 meses",
+        includedSummary: ["Inclui todas as 12 tarefas do Pacote 1 (Correções Essenciais)"],
+        toggleButtonLabel: "7 novas tarefas + Pacote 1 (19 total)",
+        allTasksCount: 19,
+        tasks: TASKS_P2,
     },
     {
-        id: "loja",
-        titulo: "Melhorias na Loja Virtual",
-        descricao:
-            "Reestruturação de categorias e navegação, otimização mobile e implementação de fluxo rápido de orçamento (ex.: WhatsApp/CRM) para reduzir abandono e aumentar conversão.",
-        valorUnico: 674,
-        mensalidade: 860,
-        icon: ShoppingCart,
-        category: "improvement",
-    },
-    {
-        id: "newsletter",
-        titulo: "Newsletters (Newsletter Estratégica)",
-        descricao:
-            "Criação/gestão de canal direto com clientes (campanhas e conteúdos), com design mensal e otimização técnica para entregabilidade e recorrência.",
-        valorUnico: 196,
-        mensalidade: 230,
-        icon: Mail,
-        category: "retention",
-    },
-    {
-        id: "login",
-        titulo: "Módulo de Autenticação Social – Google",
-        descricao:
-            "Implementação e integração de funcionalidades avançadas no website, com foco em performance, segurança e experiência de utilização. O serviço inclui configuração técnica, adaptação ao sistema existente, testes, otimização, reforço de segurança e acompanhamento inicial para garantir estabilidade, fiabilidade e uma utilização eficiente da solução.",
-        valorUnico: 196,
-        mensalidade: 72,
-        icon: LogIn,
-        category: "retention",
-    },
-    {
-        id: "login-facebook",
-        titulo: "Módulo de Autenticação Social – Facebook",
-        descricao:
-            "Implementação e integração de funcionalidades avançadas no website, com foco em performance, segurança e experiência de utilização. O serviço inclui configuração técnica, adaptação ao sistema existente, testes, otimização, reforço de segurança e acompanhamento inicial para garantir estabilidade, fiabilidade e uma utilização eficiente da solução.",
-        valorUnico: 196,
-        mensalidade: 72,
-        icon: LogIn,
-        category: "retention",
-    },
-    {
-        id: "login-apple",
-        titulo: "Módulo de Autenticação Social – Apple (OFERTA)",
-        descricao:
-            "Implementação e integração de funcionalidades avançadas no website, com foco em performance, segurança e experiência de utilização. O serviço inclui configuração técnica, adaptação ao sistema existente, testes, otimização, reforço de segurança e acompanhamento inicial para garantir estabilidade, fiabilidade e uma utilização eficiente da solução.",
-        valorUnico: 0,
-        mensalidade: 0,
-        icon: LogIn,
-        category: "retention",
-    },
-    {
-        id: "chatbot",
-        titulo: "Assistente Virtual 24h (Chatbot)",
-        descricao:
-            "Atendimento e captação de orçamentos 24/7 para esclarecer dúvidas, evitar perda de leads por falta de resposta e apoiar a equipa comercial.",
-        valorUnico: 1600,
-        mensalidade: 520,
-        icon: Bot,
-        category: "retention",
+        id: "pacote-3",
+        tier: "Pacote 3",
+        title: "Crescimento Estratégico",
+        description: "Diferenciação B2B real e catálogo completo.",
+        totalPrice: 5800,
+        halfPayment: 2900,
+        monthlyPayment: 1450,
+        monthsCount: 4,
+        timeline: "~4 meses",
+        includedSummary: [
+            "Inclui todas as 12 tarefas do Pacote 1 (Correções Essenciais)",
+            "Inclui todas as 7 tarefas do Pacote 2 (Otimização de Conversão)",
+        ],
+        toggleButtonLabel: "7 novas tarefas + Pacotes 1 e 2 (26 total)",
+        allTasksCount: 26,
+        tasks: TASKS_P3,
     },
 ];
 
-const DISCOUNT_PER_SERVICE = 2;
-const MAX_DISCOUNT = 16;
+/* ── Monthly Services Options (200€ /mês) ── */
+const MONTHLY_SERVICES: MonthlyService[] = [
+    {
+        id: "retainer",
+        title: "Manutenção Mensal",
+        description: "Monitorização SEO, atualizações de conteúdo e relatórios mensais.",
+        basePrice: 200,
+        icon: ShieldCheck,
+    },
+    {
+        id: "cybersec",
+        title: "Cibersegurança e Monitorização",
+        description: "Proteção contra ameaças, monitorização 24/7 de uptime, segurança, backups e patches.",
+        basePrice: 200,
+        icon: Lock,
+    },
+];
+
+const COMPARISON_FEATURES = [
+    { name: "Total de Tarefas Incluídas", p1: "12 Tarefas", p2: "19 Tarefas (Inclui P1)", p3: "26 Tarefas (Inclui P1 + P2)" },
+    { name: "Auditoria Técnica & Fundação SEO", p1: true, p2: true, p3: true },
+    { name: "Meta Tags Otimizadas & Schema Markup", p1: true, p2: true, p3: true },
+    { name: "Integração Google Analytics & Search Console", p1: true, p2: true, p3: true },
+    { name: "Registo ANVISA & Fichas Técnicas", p1: false, p2: true, p3: true },
+    { name: "Formulário de Cotação RFQ B2B", p1: false, p2: true, p3: true },
+    { name: "Reescrita Descrições Produtos (Top 25)", p1: false, p2: true, p3: true },
+    { name: "Sistema de Conta B2B (Preço por Perfil)", p1: false, p2: false, p3: true },
+    { name: "Tabelas de Desconto por Volume", p1: false, p2: false, p3: true },
+    { name: "Estratégia de Conteúdo & Catálogo Completo", p1: false, p2: false, p3: true },
+    { name: "Manutenção Mensal (Opcional)", p1: "200 € /mês", p2: "200 € /mês", p3: "0 € (Gratuito 3 Meses)" },
+    { name: "Cibersegurança & Monitorização (Opcional)", p1: "200 € /mês", p2: "200 € /mês", p3: "0 € (Gratuito 3 Meses)" },
+    { name: "Caução de Reserva Serv. Mensais", p1: "1º Mês na Adjudicação", p2: "1º Mês na Adjudicação", p3: "0 € (Oferta no P3)" },
+    { name: "Tempo de Entrega Estimado", p1: "~2 meses", p2: "~3 meses", p3: "~4 meses" },
+];
 
 const TERMS_TEXT = `O presente orçamento é válido pelo prazo de trinta (30) dias a contar da data da sua emissão. A aceitação do mesmo implica concordância com as condições aqui descritas.
 
-O prazo estimado para entrega da totalidade do projeto é de vinte e cinco (25) dias úteis, contados a partir da confirmação do pagamento da entrada prevista no presente orçamento. Após a entrega inicial, o prestador compromete-se a realizar as revisões e pequenos ajustes solicitados pelo cliente no prazo máximo de dez (10) dias úteis, salvo acordo escrito em contrário. O não cumprimento dos prazos por parte do cliente na entrega de conteúdos, feedback ou informações necessárias suspende proporcionalmente os prazos de execução previstos.
+O prazo estimado para entrega da totalidade do projeto é o especificado no pacote contratado, contado a partir da confirmação do pagamento inicial previsto. Após a entrega inicial, o prestador compromete-se a realizar as revisões e pequenos ajustes solicitados pelo cliente no prazo máximo de dez (10) dias úteis.
 
 Os serviços objeto deste orçamento serão faturados através do trabalhador independente Pedro Duarte de Almeida Alves Costa, NIF 231798423, enquadrado no regime de isenção de IVA, nos termos do artigo 53.º do Código do IVA.
 
-As condições de pagamento estabelecem que 50% do valor total dos serviços únicos seja liquidado na adjudicação, acrescido de uma mensalidade de caução correspondente ao último mês de serviço. Os restantes 50% do valor dos serviços únicos serão liquidados na entrega final dos mesmos, salvo acordo escrito em contrário entre as partes.
+Na opção de pagamento 50/50, estabelece-se que 50% do valor total do pacote selecionado seja liquidado na adjudicação e os restantes 50% na entrega final dos trabalhos. Na opção de pagamento Mensal, o montante é dividido pelo número de meses correspondente ao pacote (2 meses no Pacote 1, 3 meses no Pacote 2 e 4 meses no Pacote 3).
 
-O presente contrato tem uma duração mínima de seis (6) meses, contados a partir da data de entrega dos serviços. A primeira mensalidade constitui uma caução, referente ao último mês de vigência do contrato. As mensalidades regulares começam a ser cobradas apenas a partir da entrega efetiva dos serviços contratados. Após o período mínimo de seis (6) meses, o cliente poderá cancelar os serviços mensais a qualquer momento, sendo que o último mês de serviço se encontra previamente liquidado pela caução inicial. Em caso de cancelamento antes do término do período mínimo de seis (6) meses, a mensalidade referente ao mês em curso será integralmente devida e a caução inicial será retida pelo prestador, não havendo lugar a qualquer reembolso.
+Aquando da adjudicação, é cobrada na fatura inicial a caução correspondente ao 1.º mês dos serviços mensais adicionais selecionados, garantindo o compromisso e a reserva de disponibilidade. O serviço entra em ativação efetiva após a conclusão da auditoria inicial. Os serviços mensais são renovados mês a mês, podendo o cliente rescindir livremente a qualquer momento até ao final de cada mês.
 
-O plano de suporte premium Bundlr contempla até seis (6) revisões, com a duração máxima de duas (2) horas por intervenção, num período de seis (6) meses após a entrega dos serviços. Para efeitos do presente orçamento, consideram-se revisões as pequenas alterações solicitadas pelo cliente e a correção de eventuais erros ou falhas (bugs) decorrentes da utilização normal do serviço.
+No caso da seleção do Pacote 3 (Crescimento Estratégico), os serviços mensais adicionais beneficiam de um valor promocional de 0€ durante os primeiros três (3) meses após a auditoria, ficando isentos do valor da caução inicial.
 
-O suporte premium Bundlr funciona 24 horas por dia, 7 dias por semana. Os pedidos serão respondidos com a maior brevidade possível, garantindo acompanhamento contínuo e dedicado ao cliente.
-
-Qualquer pedido que envolva a adição de novas funcionalidades, serviços distintos ou tecnologias adicionais — incluindo, mas não se limitando, a módulos de faturação, tratamento de imagens ou outros — será obrigatoriamente objeto de novo orçamento autónomo.
-
-O grupo não se responsabiliza por incompatibilidades, erros ou falhas resultantes da integração de serviços ou tecnologias externas, implementadas por terceiros sem supervisão ou validação prévia da equipa.
-
-A aceitação e assinatura do presente orçamento implicam concordância integral com os termos e condições aqui descritos. O cliente compromete-se, desde já, ao pagamento do montante inicial previsto, a título de adjudicação, o qual será devido mesmo em caso de desistência unilateral dos serviços após a aceitação da presente proposta.`;
-
-/* ══════════════ Animations ══════════════ */
-const EASE: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94];
-
-const cardVariants = {
-    hidden: { opacity: 0, y: 30, scale: 0.96 },
-    visible: (i: number) => ({
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        transition: { delay: i * 0.08, duration: 0.5, ease: EASE },
-    }),
-};
-
-const summaryVariants = {
-    hidden: { y: 100, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: EASE } },
-};
-
-const overlayVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.25 } },
-    exit: { opacity: 0, transition: { duration: 0.2 } },
-};
-
-const modalVariants = {
-    hidden: { opacity: 0, scale: 0.92, y: 30 },
-    visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.35, ease: EASE } },
-    exit: { opacity: 0, scale: 0.92, y: 30, transition: { duration: 0.2 } },
-};
+A aceitação e assinatura do presente orçamento implicam concordância integral com os termos e condições aqui descritos.`;
 
 /* ══════════════ PDF Generator ══════════════ */
 async function generateInvoicePDF(
     clientData: { nome: string; email: string; nif: string; morada: string },
-    selectedServices: Service[],
-    discount: number,
-    totalUnicoComDesconto: number,
-    totalMensalComDesconto: number,
-    entradaPagamento: number,
-    caucao: number
+    selectedPackage: Package,
+    activeMonthlyServices: { title: string; price: number; isFreeOffer: boolean }[],
+    paymentMode: "half" | "monthly",
+    totalAmount: number,
+    upfrontAmount: number,
+    packageUpfront: number,
+    monthlyCaucao: number,
+    totalMonthlyFee: number
 ) {
     const { jsPDF } = await import("jspdf");
     const doc = new jsPDF("p", "mm", "a4");
@@ -192,8 +209,7 @@ async function generateInvoicePDF(
     const contentW = pageW - margin * 2;
     let y = 20;
 
-    // ── Load logo ──
-    let logoLoaded = false;
+    // Header Logo
     try {
         const img = new Image();
         img.crossOrigin = "anonymous";
@@ -212,43 +228,38 @@ async function generateInvoicePDF(
             const logoH = 10;
             const logoW = (img.width / img.height) * logoH;
             doc.addImage(dataUrl, "PNG", margin, y, logoW, logoH);
-            logoLoaded = true;
         }
     } catch {
-        // logo not available, skip
+        // logo skip
     }
 
-    // ── Header subtitle (below logo) ──
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.setTextColor(130, 130, 130);
     doc.text("Grupo de Design e Soluções Informáticas", margin, y + 14);
 
-    // ── Date right-aligned ──
     doc.setFontSize(8);
     doc.setTextColor(100, 116, 139);
     const today = new Date().toLocaleDateString("pt-PT");
     doc.text(`Data: ${today}`, pageW - margin, y + 8, { align: "right" });
-    doc.text("Ref: 0125S", pageW - margin, y + 13, { align: "right" });
+    doc.text("Ref: MZ-2026-B2B", pageW - margin, y + 13, { align: "right" });
 
     y += 24;
 
-    // ── Green line ──
     doc.setDrawColor(5, 150, 105);
     doc.setLineWidth(0.8);
     doc.line(margin, y, pageW - margin, y);
     y += 8;
 
-    // ── Title ──
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
     doc.setTextColor(6, 78, 59);
-    doc.text("Orçamento — Mz Medical", margin, y);
+    doc.text("Proposta Comercial — Mz Medical", margin, y);
     y += 10;
 
-    // ── Client data ──
+    // Client box
     doc.setFillColor(240, 253, 244);
-    doc.roundedRect(margin, y, contentW, 28, 3, 3, "F");
+    doc.roundedRect(margin, y, contentW, 26, 3, 3, "F");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
     doc.setTextColor(6, 78, 59);
@@ -260,61 +271,63 @@ async function generateInvoicePDF(
     doc.text(`Email: ${clientData.email}`, margin + 5, y + 17);
     doc.text(`NIF: ${clientData.nif}`, margin + contentW / 2, y + 12);
     doc.text(`Morada: ${clientData.morada}`, margin + contentW / 2, y + 17);
-    y += 34;
+    y += 32;
 
-    // ── Services table ──
+    // Table
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
     doc.setTextColor(6, 78, 59);
-    doc.text("Serviços Selecionados", margin, y);
+    doc.text("Plano Selecionado, Caução & Serviços Mensais", margin, y);
     y += 6;
 
-    // Table header
     doc.setFillColor(5, 150, 105);
     doc.roundedRect(margin, y, contentW, 7, 1, 1, "F");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8);
     doc.setTextColor(255, 255, 255);
-    doc.text("Serviço", margin + 3, y + 5);
-    doc.text("Único", pageW - margin - 42, y + 5, { align: "right" });
-    doc.text("Mensal", pageW - margin - 3, y + 5, { align: "right" });
+    doc.text("Item / Descrição", margin + 3, y + 5);
+    doc.text("Tipo / Condição", pageW - margin - 45, y + 5, { align: "right" });
+    doc.text("Valor", pageW - margin - 3, y + 5, { align: "right" });
     y += 9;
 
-    // Table rows
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
-    selectedServices.forEach((s, i) => {
-        if (i % 2 === 0) {
-            doc.setFillColor(248, 250, 249);
-            doc.rect(margin, y - 3.5, contentW, 7, "F");
-        }
+    doc.setFillColor(248, 250, 249);
+    doc.rect(margin, y - 3.5, contentW, 7, "F");
+    doc.setTextColor(54, 93, 80);
+    doc.text(`${selectedPackage.tier} — ${selectedPackage.title}`, margin + 3, y);
+    doc.text(`Plano Main (${selectedPackage.timeline})`, pageW - margin - 45, y, { align: "right" });
+    doc.text(`${formatNum(selectedPackage.totalPrice)} €`, pageW - margin - 3, y, { align: "right" });
+    y += 7;
+
+    activeMonthlyServices.forEach((mServ) => {
         doc.setTextColor(54, 93, 80);
-        const title = s.titulo.length > 50 ? s.titulo.substring(0, 47) + "..." : s.titulo;
-        doc.text(title, margin + 3, y);
-        doc.text(`${s.valorUnico}€`, pageW - margin - 42, y, { align: "right" });
-        doc.text(s.mensalidade > 0 ? `${s.mensalidade}€` : "0€", pageW - margin - 3, y, {
-            align: "right",
-        });
+        const priceStr = mServ.isFreeOffer ? "0 € (OFERTA 3 Meses)" : `${mServ.price} €/mês`;
+        doc.text(`Serviço Mensal: ${mServ.title}`, margin + 3, y);
+        doc.text("Ativação pós-auditoria", pageW - margin - 45, y, { align: "right" });
+        doc.text(priceStr, pageW - margin - 3, y, { align: "right" });
         y += 7;
     });
 
-    y += 4;
-
-    // ── Discount line ──
-    if (discount > 0) {
+    if (monthlyCaucao > 0) {
+        doc.setFillColor(236, 253, 245);
+        doc.rect(margin, y - 3.5, contentW, 7, "F");
+        doc.setTextColor(4, 120, 87);
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(9);
-        doc.setTextColor(5, 150, 105);
-        doc.text(`Desconto aplicado: ${discount}%`, margin, y);
-        y += 8;
+        doc.text("Caução 1.º Mês (Serviços Mensais — Adjudicação)", margin + 3, y);
+        doc.text("Caução de Reserva", pageW - margin - 45, y, { align: "right" });
+        doc.text(`${formatNum(monthlyCaucao)} €`, pageW - margin - 3, y, { align: "right" });
+        y += 7;
     }
 
-    // ── Totals box ──
+    y += 5;
+
+    // Totals Box
     doc.setFillColor(240, 253, 244);
-    doc.roundedRect(margin, y, contentW, 32, 3, 3, "F");
+    doc.roundedRect(margin, y, contentW, 36, 3, 3, "F");
     doc.setDrawColor(16, 185, 129);
     doc.setLineWidth(0.3);
-    doc.roundedRect(margin, y, contentW, 32, 3, 3, "S");
+    doc.roundedRect(margin, y, contentW, 36, 3, 3, "S");
 
     const col1 = margin + 5;
     const col2 = pageW - margin - 5;
@@ -322,53 +335,58 @@ async function generateInvoicePDF(
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor(90, 138, 120);
-    doc.text("Valor Único (com desconto)", col1, y + 7);
+    doc.text("Modalidade de Pagamento do Plano", col1, y + 6);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(6, 78, 59);
-    doc.text(`${formatNum(totalUnicoComDesconto)}€`, col2, y + 7, { align: "right" });
+    doc.text(
+        paymentMode === "half"
+            ? "50% Entrada / 50% Entrega"
+            : `Pagamento Mensal (${selectedPackage.monthsCount} meses)`,
+        col2,
+        y + 6,
+        { align: "right" }
+    );
 
     doc.setFont("helvetica", "normal");
     doc.setTextColor(90, 138, 120);
-    doc.text("Entrada (50%)", col1, y + 14);
+    doc.text("Prestação/Entrada do Plano Principal", col1, y + 13);
     doc.setFont("helvetica", "bold");
+    doc.setTextColor(6, 78, 59);
+    doc.text(`${formatNum(packageUpfront)} €`, col2, y + 13, { align: "right" });
+
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(90, 138, 120);
+    doc.text("Caução 1.º Mês de Serviços Mensais", col1, y + 20);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(6, 78, 59);
+    doc.text(monthlyCaucao > 0 ? `${formatNum(monthlyCaucao)} €` : "0 € (OFERTA P3)", col2, y + 20, { align: "right" });
+
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(6, 78, 59);
+    doc.text("Total Inicial a Pagar na Adjudicação", col1, y + 28);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
     doc.setTextColor(5, 150, 105);
-    doc.text(`${formatNum(entradaPagamento)}€`, col2, y + 14, { align: "right" });
+    doc.text(`${formatNum(upfrontAmount)} €`, col2, y + 28, { align: "right" });
 
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(90, 138, 120);
-    doc.text("Mensalidade (com desconto)", col1, y + 21);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(6, 78, 59);
-    doc.text(`${formatNum(totalMensalComDesconto)}€/mês`, col2, y + 21, { align: "right" });
+    y += 44;
 
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(90, 138, 120);
-    doc.text("Caução (último mês)", col1, y + 28);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(6, 78, 59);
-    doc.text(`${formatNum(caucao)}€`, col2, y + 28, { align: "right" });
-
-    y += 40;
-
-    // ── Bank details ──
+    // Bank Details
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
     doc.setTextColor(6, 78, 59);
-    doc.text("Dados para Transferência", margin, y);
+    doc.text("Dados para Transferência Bancária", margin, y);
     y += 6;
 
-    const totalAPagar = entradaPagamento + caucao;
-
     doc.setFillColor(248, 250, 249);
-    doc.roundedRect(margin, y, contentW, 34, 3, 3, "F");
+    doc.roundedRect(margin, y, contentW, 32, 3, 3, "F");
 
     const bankData = [
-        ["Entidade", "Pedro Duarte Costa"],
+        ["Titular", "Pedro Duarte Costa"],
         ["NIF", "231798423"],
         ["IBAN", "PT50003502100002261490090"],
         ["Banco", "CGD"],
-        ["Referência", "0125S"],
-        ["Montante", `${formatNum(totalAPagar)}€ (Entrada + Caução)`],
+        ["Montante Inicial", `${formatNum(upfrontAmount)} €`],
     ];
 
     doc.setFontSize(8);
@@ -379,47 +397,13 @@ async function generateInvoicePDF(
         doc.text(`${label}:`, margin + 5, bankY);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(6, 78, 59);
-        doc.text(val, margin + 30, bankY);
+        doc.text(val, margin + 35, bankY);
         bankY += 5;
     });
 
-    y += 42;
+    y += 40;
 
-    // ── Terms summary ──
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    doc.setTextColor(6, 78, 59);
-    doc.text("Condições Principais", margin, y);
-    y += 5;
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7);
-    doc.setTextColor(100, 116, 139);
-    const conditions = [
-        "• Orçamento válido por 30 dias.",
-        "• Prazo de entrega: 25 dias úteis após confirmação do pagamento.",
-        "• Contrato com duração mínima de 6 meses.",
-        "• 1ª mensalidade = caução referente ao último mês.",
-        "• Mensalidades iniciam após entrega dos serviços.",
-        "• Após 6 meses: cancelamento livre (último mês já pago).",
-        "• Suporte premium 24/7: 6 revisões de 2h em 6 meses.",
-        "• Isento de IVA (art. 53.º do CIVA).",
-    ];
-    conditions.forEach((c) => {
-        doc.text(c, margin, y);
-        y += 4;
-    });
-
-    y += 6;
-
-    // ── Legal note ──
-    doc.setFont("helvetica", "italic");
-    doc.setFontSize(7);
-    doc.setTextColor(130, 130, 130);
-    doc.text("O presente orçamento é regido pelos Termos e Condições constantes na página seguinte, cuja aceitação é obrigatória.", margin, y);
-    y += 8;
-
-    // ── Signature line ──
+    // Signatures
     doc.setDrawColor(200, 200, 200);
     doc.setLineWidth(0.3);
     doc.line(margin, y, margin + 70, y);
@@ -428,109 +412,31 @@ async function generateInvoicePDF(
     doc.text("Assinatura do Cliente", margin, y + 4);
 
     doc.line(pageW - margin - 70, y, pageW - margin, y);
-    doc.text("Data", pageW - margin - 70, y + 4);
+    doc.text("Data de Aceitação", pageW - margin - 70, y + 4);
 
-    // ── Page 1 footer ──
-    const pageH = doc.internal.pageSize.getHeight();
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7);
-    doc.setTextColor(180);
-    doc.text("Página 1 de 2", pageW / 2, pageH - 10, { align: "center" });
-
-    // ═══════════════════════════════════════
-    // PAGE 2 — Terms & Conditions
-    // ═══════════════════════════════════════
-    doc.addPage();
-    let y2 = 20;
-
-    // ── Page 2 header ──
-    if (logoLoaded) {
-        try {
-            const img2 = new Image();
-            img2.crossOrigin = "anonymous";
-            await new Promise<void>((resolve, reject) => {
-                img2.onload = () => resolve();
-                img2.onerror = () => reject();
-                img2.src = "/logo.png";
-            });
-            const canvas2 = document.createElement("canvas");
-            canvas2.width = img2.width;
-            canvas2.height = img2.height;
-            const ctx2 = canvas2.getContext("2d");
-            if (ctx2) {
-                ctx2.drawImage(img2, 0, 0);
-                const dataUrl2 = canvas2.toDataURL("image/png");
-                const logoH2 = 10;
-                const logoW2 = (img2.width / img2.height) * logoH2;
-                doc.addImage(dataUrl2, "PNG", margin, y2, logoW2, logoH2);
-            }
-        } catch {
-            // skip
-        }
-    }
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
-    doc.setTextColor(130, 130, 130);
-    doc.text("Grupo de Design e Soluções Informáticas", margin, y2 + 14);
-
-    y2 += 22;
-
-    // ── Green line ──
-    doc.setDrawColor(5, 150, 105);
-    doc.setLineWidth(0.8);
-    doc.line(margin, y2, pageW - margin, y2);
-    y2 += 8;
-
-    // ── Title ──
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14);
-    doc.setTextColor(6, 78, 59);
-    doc.text("Termos e Condições", margin, y2);
-    y2 += 10;
-
-    // ── Terms text ──
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.5);
-    doc.setTextColor(60, 60, 60);
-
-    const paragraphs = TERMS_TEXT.split("\n\n");
-    const maxTextWidth = contentW;
-    const lineHeight = 3.5;
-
-    paragraphs.forEach((para) => {
-        const lines = doc.splitTextToSize(para, maxTextWidth);
-        lines.forEach((line: string) => {
-            if (y2 > pageH - 20) {
-                // would overflow, but terms should fit on one page at 7.5pt
-                doc.addPage();
-                y2 = 20;
-            }
-            doc.text(line, margin, y2);
-            y2 += lineHeight;
-        });
-        y2 += 2; // paragraph gap
-    });
-
-    // ── Page 2 footer ──
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7);
-    doc.setTextColor(180);
-    doc.text("Página 2 de 2", pageW / 2, pageH - 10, { align: "center" });
-
-    // Save
     doc.save(`Orcamento_MzMedical_${clientData.nome.replace(/\s+/g, "_")}.pdf`);
 }
 
 function formatNum(v: number) {
-    return Math.round(v * 100 / 100)
-        .toLocaleString("pt-PT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return v.toLocaleString("pt-PT", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 
-/* ══════════════ Main Component ══════════════ */
+/* ══════════════ Main Page Component ══════════════ */
 export default function AnaliseTecMzmedicalPage() {
-    const [selected, setSelected] = useState<Set<string>>(new Set());
-    const [step, setStep] = useState<null | "form" | "terms" | "bank">(null);
+    const [paymentMode, setPaymentMode] = useState<"half" | "monthly">("half");
+    const [selectedPackageId, setSelectedPackageId] = useState<string>("pacote-2");
+    const [selectedMonthlyServices, setSelectedMonthlyServices] = useState<Set<string>>(
+        new Set(["retainer"])
+    );
+
+    const [expandedTasks, setExpandedTasks] = useState<Set<string>>(
+        new Set(["pacote-1", "pacote-2", "pacote-3"])
+    );
+
+    const [step, setStep] = useState<null | "form" | "terms" | "success">(null);
+    const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
     const [copiedField, setCopiedField] = useState<string | null>(null);
+
     const [formData, setFormData] = useState({
         nome: "",
         email: "",
@@ -539,8 +445,8 @@ export default function AnaliseTecMzmedicalPage() {
     });
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-    const toggle = (id: string) => {
-        setSelected((prev) => {
+    const toggleMonthlyService = (id: string) => {
+        setSelectedMonthlyServices((prev) => {
             const next = new Set(prev);
             if (next.has(id)) next.delete(id);
             else next.add(id);
@@ -548,59 +454,61 @@ export default function AnaliseTecMzmedicalPage() {
         });
     };
 
-    const {
-        totalUnico,
-        totalMensal,
-        discount,
-        totalUnicoComDesconto,
-        totalMensalComDesconto,
-        poupancaUnico,
-        poupancaMensal,
-        entradaPagamento,
-        caucao,
-    } = useMemo(() => {
-        let totalU = 0;
-        let totalM = 0;
-        selected.forEach((id) => {
-            const s = SERVICES.find((sv) => sv.id === id);
-            if (s) {
-                totalU += s.valorUnico;
-                totalM += s.mensalidade;
-            }
+    const toggleTasksAccordion = (e: React.MouseEvent, id: string) => {
+        e.stopPropagation();
+        setExpandedTasks((prev) => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
         });
-        const disc = Math.min(selected.size * DISCOUNT_PER_SERVICE, MAX_DISCOUNT);
-        const descontoU = totalU * (disc / 100);
-        const descontoM = totalM * (disc / 100);
-        const unicoFinal = totalU - descontoU;
-        const mensalFinal = totalM - descontoM;
-        return {
-            totalUnico: totalU,
-            totalMensal: totalM,
-            discount: disc,
-            totalUnicoComDesconto: unicoFinal,
-            totalMensalComDesconto: mensalFinal,
-            poupancaUnico: descontoU,
-            poupancaMensal: descontoM,
-            entradaPagamento: Math.round(unicoFinal * 0.5 * 100) / 100,
-            caucao: mensalFinal,
-        };
-    }, [selected]);
+    };
 
-    const selectedServices = useMemo(
-        () => SERVICES.filter((s) => selected.has(s.id)),
-        [selected]
+    const selectedPackage = useMemo(
+        () => PACKAGES.find((p) => p.id === selectedPackageId) || PACKAGES[1],
+        [selectedPackageId]
     );
 
-    const improvements = SERVICES.filter((s) => s.category === "improvement");
-    const retentions = SERVICES.filter((s) => s.category === "retention");
+    const isPacote3Selected = selectedPackageId === "pacote-3";
 
-    const fmtShort = (v: number) =>
-        v.toLocaleString("pt-PT", { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + "€";
-    const fmtFull = (v: number) =>
-        v.toLocaleString("pt-PT", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "€";
+    const activeMonthlyServicesDetails = useMemo(() => {
+        return MONTHLY_SERVICES.filter((m) => selectedMonthlyServices.has(m.id)).map((m) => ({
+            ...m,
+            price: isPacote3Selected ? 0 : m.basePrice,
+            effectivePrice: isPacote3Selected ? 0 : m.basePrice,
+            isFreeOffer: isPacote3Selected,
+        }));
+    }, [selectedMonthlyServices, isPacote3Selected]);
+
+    const { totalAmount, upfrontAmount, packageUpfront, monthlyCaucao, totalMonthlyFee, monthlyScheduleText } = useMemo(() => {
+        const pkgTotal = selectedPackage.totalPrice;
+        const pkgUpfront = paymentMode === "half" ? selectedPackage.halfPayment : selectedPackage.monthlyPayment;
+        const caucao = isPacote3Selected ? 0 : activeMonthlyServicesDetails.reduce((acc, m) => acc + m.effectivePrice, 0);
+        const totalUpfront = pkgUpfront + caucao;
+        const monthlyFee = activeMonthlyServicesDetails.reduce((acc, m) => acc + m.effectivePrice, 0);
+
+        let schedule = "";
+        if (paymentMode === "half") {
+            schedule = `Entrada de 50% (${formatNum(selectedPackage.halfPayment)} €)` +
+                (caucao > 0 ? ` + Caução 1.º mês de serviços mensais (${formatNum(caucao)} €)` : "") +
+                ` na adjudicação; restantes 50% na entrega.`;
+        } else {
+            schedule = `1.ª prestação (${formatNum(selectedPackage.monthlyPayment)} €)` +
+                (caucao > 0 ? ` + Caução 1.º mês de serviços mensais (${formatNum(caucao)} €)` : "") +
+                ` na adjudicação; ${selectedPackage.monthsCount - 1} prestação(ões) restantes do pacote.`;
+        }
+
+        return {
+            totalAmount: pkgTotal,
+            upfrontAmount: totalUpfront,
+            packageUpfront: pkgUpfront,
+            monthlyCaucao: caucao,
+            totalMonthlyFee: monthlyFee,
+            monthlyScheduleText: schedule,
+        };
+    }, [selectedPackage, paymentMode, activeMonthlyServicesDetails, isPacote3Selected]);
 
     const handleAvancar = () => {
-        if (selected.size === 0) return;
         setStep("form");
     };
 
@@ -622,7 +530,29 @@ export default function AnaliseTecMzmedicalPage() {
         if (validateForm()) setStep("terms");
     };
 
-    const handleAcceptTerms = () => setStep("bank");
+    const handleAcceptTermsAndSendEmail = async () => {
+        setIsSendingEmail(true);
+        try {
+            await fetch("/api/send-proposal", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    clientData: formData,
+                    selectedPackage,
+                    paymentMode,
+                    upfrontAmount,
+                    monthlyCaucao,
+                    totalMonthlyFee,
+                    activeMonthlyServices: activeMonthlyServicesDetails,
+                }),
+            });
+        } catch (err) {
+            console.error("Erro ao enviar chamada de email:", err);
+        } finally {
+            setIsSendingEmail(false);
+            setStep("success");
+        }
+    };
 
     const closeModal = () => setStep(null);
 
@@ -635,14 +565,16 @@ export default function AnaliseTecMzmedicalPage() {
     const handleDownloadPDF = useCallback(async () => {
         await generateInvoicePDF(
             formData,
-            selectedServices,
-            discount,
-            totalUnicoComDesconto,
-            totalMensalComDesconto,
-            entradaPagamento,
-            caucao
+            selectedPackage,
+            activeMonthlyServicesDetails,
+            paymentMode,
+            totalAmount,
+            upfrontAmount,
+            packageUpfront,
+            monthlyCaucao,
+            totalMonthlyFee
         );
-    }, [formData, selectedServices, discount, totalUnicoComDesconto, totalMensalComDesconto, entradaPagamento, caucao]);
+    }, [formData, selectedPackage, activeMonthlyServicesDetails, paymentMode, totalAmount, upfrontAmount, packageUpfront, monthlyCaucao, totalMonthlyFee]);
 
     return (
         <div className="analise-page">
@@ -656,192 +588,354 @@ export default function AnaliseTecMzmedicalPage() {
                 >
                     <div className="analise-badge">
                         <Sparkles size={14} />
-                        Análise Técnica Personalizada
+                        Proposta Comercial &amp; Otimização
                     </div>
                     <h1 className="analise-title">
-                        Soluções para <span>Mz Medical</span>
+                        Otimização <span>mzmedical.com.br</span>
                     </h1>
                     <p className="analise-subtitle">
-                        Selecione os serviços que pretende implementar. Quanto mais serviços
-                        escolher, maior o seu desconto — até{" "}
-                        <strong>16% sobre o valor único e mensalidades</strong>.
+                        Auditoria técnica, SEO, conversão e preparação B2B para a plataforma Tray Commerce.
                     </p>
+
+                    <div className="header-meta">
+                        <span>Preparado em <strong>03 Ago 2026</strong></span>
+                        <span>Válido até <strong>03 Set 2026</strong></span>
+                    </div>
                 </motion.header>
 
-                {/* ── Discount incentive ── */}
-                <motion.div
-                    className="discount-incentive"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3, duration: 0.5 }}
-                >
-                    <p>
-                        🚀 Cada serviço selecionado acrescenta <strong>2% de desconto</strong>{" "}
-                        sobre o valor único <strong>e sobre as mensalidades</strong>. Selecione
-                        todos os 8 para obter o máximo de{" "}
-                        <strong>16% de desconto em tudo</strong>!
-                    </p>
-                </motion.div>
-
-                {/* ── Melhorias ── */}
-                <section>
-                    <div className="section-title-row">
-                        <div className="section-icon-wrap improvements">
-                            <TrendingUp size={20} />
-                        </div>
-                        <div>
-                            <h2 className="section-title">Melhorias e Recomendações</h2>
-                            <p className="section-title-sub">
-                                Otimizações técnicas e visuais para o seu website
-                            </p>
-                        </div>
+                {/* ── Payment Mode Switcher ── */}
+                <div className="toggle-section">
+                    <div className="toggle-wrapper">
+                        <div
+                            className={`toggle-slider ${paymentMode === "monthly" ? "right" : ""}`}
+                        />
+                        <button
+                            className={`toggle-btn ${paymentMode === "half" ? "active" : ""}`}
+                            onClick={() => setPaymentMode("half")}
+                        >
+                            50 / 50
+                        </button>
+                        <button
+                            className={`toggle-btn ${paymentMode === "monthly" ? "active" : ""}`}
+                            onClick={() => setPaymentMode("monthly")}
+                        >
+                            Mensal
+                        </button>
                     </div>
-                    <div className="cards-grid">
-                        {improvements.map((s, i) => (
-                            <ServiceCard
-                                key={s.id}
-                                service={s}
-                                index={i}
-                                isSelected={selected.has(s.id)}
-                                onToggle={toggle}
-                                colorClass="green"
-                            />
-                        ))}
+                </div>
+
+                {/* ── Packages Grid (Single Choice) ── */}
+                <div className="packages-grid">
+                    {PACKAGES.map((pkg) => {
+                        const isSelected = selectedPackageId === pkg.id;
+                        const isExpanded = expandedTasks.has(pkg.id);
+                        return (
+                            <div
+                                key={pkg.id}
+                                className={`package-card ${isSelected ? "selected" : ""}`}
+                                onClick={() => setSelectedPackageId(pkg.id)}
+                            >
+                                <div className="card-select-check">
+                                    <Check size={16} strokeWidth={3} />
+                                </div>
+
+                                <div className="card-tier">{pkg.tier}</div>
+                                <h2 className="card-title">{pkg.title}</h2>
+                                <p className="card-desc">{pkg.description}</p>
+
+                                {pkg.id === "pacote-3" && (
+                                    <div className="p3-offer-badge">
+                                        <Zap size={13} />
+                                        Serviços Mensais a 0€ nos primeiros 3 Meses!
+                                    </div>
+                                )}
+
+                                <div className="price-block">
+                                    <div className="price-main">
+                                        <span className="currency">€</span>
+                                        {paymentMode === "half"
+                                            ? formatNum(pkg.halfPayment)
+                                            : formatNum(pkg.monthlyPayment)}
+                                        <span className="period">
+                                            {paymentMode === "half"
+                                                ? " × 2 pagamentos"
+                                                : ` /mês × ${pkg.monthsCount} meses`}
+                                        </span>
+                                    </div>
+                                    <div className="price-sub">Total: {formatNum(pkg.totalPrice)} €</div>
+                                </div>
+
+                                <div className="card-timeline">
+                                    <Clock size={14} />
+                                    {pkg.timeline}
+                                </div>
+
+                                <button
+                                    className={`tasks-toggle ${isExpanded ? "open" : ""}`}
+                                    onClick={(e) => toggleTasksAccordion(e, pkg.id)}
+                                >
+                                    <span>{pkg.toggleButtonLabel}</span>
+                                    <ChevronDown size={16} />
+                                </button>
+
+                                <div className={`tasks-list ${isExpanded ? "open" : ""}`}>
+                                    {pkg.includedSummary?.map((inc, i) => (
+                                        <div key={i} className="included-package-summary">
+                                            <Check size={14} className="inc-icon" />
+                                            <span>{inc}</span>
+                                        </div>
+                                    ))}
+
+                                    {pkg.tasks.map((task) => (
+                                        <div key={task.id} className="task-item">
+                                            <span className="task-name">{task.name}</span>
+                                            <span className="task-price">{task.price} €</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* ── Monthly Services Options ── */}
+                <h2 className="monthly-section-title">Serviços Mensais Adicionais (Opcionais)</h2>
+                <p className="monthly-section-sub">
+                    {isPacote3Selected
+                        ? "🎉 Os serviços mensais entram em ativação após a auditoria inicial, beneficiando de 0€ nos primeiros 3 meses no Pacote 3 (isento de caução)!"
+                        : "Estes serviços entram em ativação após a auditoria. É cobrada a caução do 1.º mês na adjudicação para garantia de reserva. Pode rescindir a qualquer momento até ao fim de cada mês."}
+                </p>
+
+                <div className="monthly-grid">
+                    {MONTHLY_SERVICES.map((mServ) => {
+                        const isSelected = selectedMonthlyServices.has(mServ.id);
+                        const priceToDisplay = isPacote3Selected ? 0 : mServ.basePrice;
+
+                        return (
+                            <div
+                                key={mServ.id}
+                                className={`monthly-card ${isSelected ? "selected" : ""}`}
+                                onClick={() => toggleMonthlyService(mServ.id)}
+                            >
+                                <div className="monthly-card-left">
+                                    <div className="monthly-card-check">
+                                        <Check size={16} strokeWidth={3} />
+                                    </div>
+                                    <div className="monthly-card-text">
+                                        <h3>{mServ.title}</h3>
+                                        <p>{mServ.description}</p>
+                                    </div>
+                                </div>
+
+                                <div className="monthly-card-price">
+                                    {isPacote3Selected ? (
+                                        <>
+                                            <div className="amount free">0 €</div>
+                                            <span className="free-offer-tag">OFERTA 3 MESES</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="amount">€{priceToDisplay}</div>
+                                            <div className="period">/mês (Caução 1º Mês: {priceToDisplay} €)</div>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* ── Tabulated Comparison Matrix ── */}
+                <section className="comparison-section">
+                    <div className="comparison-header-row">
+                        <h2 className="comparison-title">Diferenças Tabuladas entre Pacotes</h2>
+                        <p className="comparison-subtitle">
+                            Compare detalhadamente o escopo acumulativo e entregáveis de cada plano
+                        </p>
+                    </div>
+
+                    <div className="comparison-table-wrapper">
+                        <table className="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Funcionalidade / Entregável</th>
+                                    <th className="col-p1">Pacote 1 — Essenciais</th>
+                                    <th className="col-p2">Pacote 2 — Conversão</th>
+                                    <th className="col-p3">Pacote 3 — Estratégico</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {COMPARISON_FEATURES.map((feat, idx) => (
+                                    <tr key={idx}>
+                                        <td>{feat.name}</td>
+                                        <td>
+                                            {typeof feat.p1 === "boolean" ? (
+                                                feat.p1 ? <span className="check-icon"><Check size={14} /></span> : <span className="dash-icon">—</span>
+                                            ) : (
+                                                feat.p1
+                                            )}
+                                        </td>
+                                        <td>
+                                            {typeof feat.p2 === "boolean" ? (
+                                                feat.p2 ? <span className="check-icon"><Check size={14} /></span> : <span className="dash-icon">—</span>
+                                            ) : (
+                                                feat.p2
+                                            )}
+                                        </td>
+                                        <td>
+                                            {typeof feat.p3 === "boolean" ? (
+                                                feat.p3 ? <span className="check-icon"><Check size={14} /></span> : <span className="dash-icon">—</span>
+                                            ) : (
+                                                feat.p3.includes("Gratuito") || feat.p3.includes("Oferta") ? (
+                                                    <span className="highlight-free-cell">{feat.p3}</span>
+                                                ) : (
+                                                    feat.p3
+                                                )
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </section>
 
-                {/* ── Retenção ── */}
-                <section>
-                    <div className="section-title-row">
-                        <div className="section-icon-wrap retention">
-                            <Shield size={20} />
+                {/* ── Summary & Terms ── */}
+                <div className="summary-terms-grid">
+                    <div className="summary-card">
+                        <h2>Resumo da Seleção</h2>
+
+                        <div className="summary-row">
+                            <span className="summary-label">{selectedPackage.tier} — {selectedPackage.title}</span>
+                            <span className="summary-value">{formatNum(selectedPackage.totalPrice)} €</span>
                         </div>
-                        <div>
-                            <h2 className="section-title">Métodos de Retenção de Clientes</h2>
-                            <p className="section-title-sub">
-                                Ferramentas para fidelizar e converter mais clientes
-                            </p>
-                        </div>
-                    </div>
-                    <div className="cards-grid">
-                        {retentions.map((s, i) => (
-                            <ServiceCard
-                                key={s.id}
-                                service={s}
-                                index={i + 3}
-                                isSelected={selected.has(s.id)}
-                                onToggle={toggle}
-                                colorClass="teal"
-                            />
+
+                        {activeMonthlyServicesDetails.map((m) => (
+                            <div key={m.id} className="summary-row">
+                                <span className="summary-label">{m.title}</span>
+                                <span className="summary-value">
+                                    {m.isFreeOffer ? "0 € (OFERTA 3 Meses)" : `${m.basePrice} € /mês`}
+                                </span>
+                            </div>
                         ))}
+
+                        {monthlyCaucao > 0 && (
+                            <div className="summary-row">
+                                <span className="summary-label">Caução 1.º Mês (Serviços Mensais)</span>
+                                <span className="summary-value">{formatNum(monthlyCaucao)} €</span>
+                            </div>
+                        )}
+
+                        <div className="summary-row total">
+                            <span className="summary-label">Entrada / Inicial a Pagar na Adjudicação</span>
+                            <span className="summary-value">{formatNum(upfrontAmount)} €</span>
+                        </div>
+
+                        {totalMonthlyFee > 0 && (
+                            <div className="summary-row">
+                                <span className="summary-label">Recorrente Mensal (Pós-Auditoria)</span>
+                                <span className="summary-value">{formatNum(totalMonthlyFee)} € /mês</span>
+                            </div>
+                        )}
                     </div>
-                </section>
+
+                    <div className="terms-card">
+                        <h2>Condições Comerciais</h2>
+                        <ul>
+                            <li>Valores expressos em EUR (isento de IVA ao abrigo do art. 53.º)</li>
+                            <li>Apenas 1 plano principal selecionado por orçamento</li>
+                            <li>Conteúdo técnico (ANVISA, specs, manuais PDF) fornecido pelo cliente</li>
+                            <li>Serviços mensais entram em ativação após conclusão da auditoria inicial</li>
+                            <li>
+                                <strong>Caução de Serviços Mensais:</strong> cobrada no 1.º pagamento na adjudicação para garantia de reserva de disponibilidade
+                            </li>
+                            <li>
+                                <strong>Cancelamento Flexível:</strong> o cliente pode rescindir os serviços mensais recorrentes a qualquer momento até ao fim de cada mês
+                            </li>
+                            {isPacote3Selected && (
+                                <li style={{ fontWeight: "600", color: "#059669" }}>
+                                    OFERTA: Serviços mensais contratados com custo 0€ nos primeiros 3 meses (isento de caução) no Pacote 3!
+                                </li>
+                            )}
+                        </ul>
+                    </div>
+                </div>
+
+                <footer className="footer">
+                    <p>Proposta válida até 03 de Setembro de 2026 · Todos os pacotes incluem suporte durante a implementação</p>
+                </footer>
             </div>
 
-            {/* ══════════════ Summary Panel ══════════════ */}
+            {/* ══════════════ Floating Summary Bar ══════════════ */}
             <AnimatePresence>
                 <motion.div
                     className="summary-panel"
-                    variants={summaryVariants}
-                    initial="hidden"
-                    animate="visible"
+                    initial={{ y: 100, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.4 }}
                 >
                     <div className="summary-inner">
-                        {selected.size === 0 ? (
-                            <div className="summary-empty">
-                                👆 Selecione serviços acima para ver o resumo e desconto
+                        <div className="totals-section">
+                            <div className="total-item">
+                                <span className="total-label">Plano: {selectedPackage.title}</span>
+                                <span className="total-value accent">
+                                    {formatNum(totalAmount)} €
+                                </span>
                             </div>
-                        ) : (
-                            <>
-                                <div className="discount-section">
-                                    <div className="discount-label">
-                                        <Percent size={16} />
-                                        <span>
-                                            {selected.size} serviço{selected.size > 1 ? "s" : ""}{" "}
-                                            selecionado{selected.size > 1 ? "s" : ""}
+
+                            <div className="total-item">
+                                <span className="total-label">
+                                    Total Inicial a Pagar na Adjudicação
+                                </span>
+                                <span className="total-value">
+                                    {formatNum(upfrontAmount)} €
+                                    <span className="total-suffix">
+                                        {monthlyCaucao > 0 ? ` (Inclui ${monthlyCaucao}€ caução 1º mês)` : ""}
+                                    </span>
+                                </span>
+                            </div>
+
+                            {activeMonthlyServicesDetails.length > 0 && (
+                                <div className="total-item">
+                                    <span className="total-label">Mensalidade Recorrente (Pós-Auditoria)</span>
+                                    <span className="total-value">
+                                        {isPacote3Selected ? "0 €" : `${formatNum(totalMonthlyFee)} €`}
+                                        <span className="total-suffix">
+                                            {isPacote3Selected ? " (OFERTA 3 Meses)" : " /mês"}
                                         </span>
-                                        <span className="discount-badge">{discount}% desc.</span>
-                                    </div>
-                                    <div className="discount-bar-track">
-                                        <motion.div
-                                            className="discount-bar-fill"
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${(discount / MAX_DISCOUNT) * 100}%` }}
-                                            transition={{ duration: 0.5, ease: "easeOut" }}
-                                        />
-                                    </div>
+                                    </span>
                                 </div>
+                            )}
+                        </div>
 
-                                <div className="totals-section">
-                                    <div className="total-item">
-                                        <span className="total-label">Valor Único</span>
-                                        <div className="total-row">
-                                            {poupancaUnico > 0 && (
-                                                <span className="total-original">{fmtShort(totalUnico)}</span>
-                                            )}
-                                            <span className="total-value accent">
-                                                {fmtShort(Math.round(totalUnicoComDesconto))}
-                                            </span>
-                                        </div>
-                                        {poupancaUnico > 0 && (
-                                            <span className="total-savings">
-                                                Poupa {fmtShort(Math.round(poupancaUnico))}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <div className="total-item">
-                                        <span className="total-label">Mensalidade</span>
-                                        <div className="total-row">
-                                            {poupancaMensal > 0 && (
-                                                <span className="total-original">{fmtShort(totalMensal)}</span>
-                                            )}
-                                            <span className="total-value">
-                                                {fmtShort(Math.round(totalMensalComDesconto))}
-                                                <span className="total-suffix">/mês</span>
-                                            </span>
-                                        </div>
-                                        {poupancaMensal > 0 && (
-                                            <span className="total-savings">
-                                                Poupa {fmtShort(Math.round(poupancaMensal))}/mês
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <button onClick={handleAvancar} className="summary-cta">
-                                    Avançar <ArrowRight size={18} />
-                                </button>
-                            </>
-                        )}
+                        <button onClick={handleAvancar} className="summary-cta">
+                            Avançar com Proposta <ArrowRight size={18} />
+                        </button>
                     </div>
                 </motion.div>
             </AnimatePresence>
 
-            {/* ══════════════ STEP 1 — Client Form ══════════════ */}
+            {/* ══════════════ STEP 1 — Form Modal ══════════════ */}
             <AnimatePresence>
                 {step === "form" && (
                     <motion.div
                         className="modal-overlay"
-                        variants={overlayVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                         onClick={closeModal}
                     >
                         <motion.div
                             className="modal-container modal-form"
-                            variants={modalVariants}
-                            initial="hidden"
-                            animate="visible"
-                            exit="exit"
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
                             onClick={(e) => e.stopPropagation()}
                         >
                             <button className="modal-close" onClick={closeModal}>
                                 <X size={20} />
                             </button>
 
-                            {/* Stepper */}
                             <div className="stepper">
                                 <div className="stepper-step active">
                                     <div className="stepper-dot">1</div>
@@ -855,7 +949,7 @@ export default function AnaliseTecMzmedicalPage() {
                                 <div className="stepper-line" />
                                 <div className="stepper-step">
                                     <div className="stepper-dot">3</div>
-                                    <span>Pagamento</span>
+                                    <span>Concluído</span>
                                 </div>
                             </div>
 
@@ -865,16 +959,16 @@ export default function AnaliseTecMzmedicalPage() {
                                 </div>
                                 <h2 className="modal-title">Dados de Faturação</h2>
                                 <p className="modal-subtitle">
-                                    Preencha os seus dados para emissão da fatura
+                                    Preencha os seus dados para emissão da proposta e fatura
                                 </p>
                             </div>
 
                             <div className="form-grid">
                                 <div className="form-field full">
-                                    <label>Nome</label>
+                                    <label>Nome / Razão Social</label>
                                     <input
                                         type="text"
-                                        placeholder="Ex.: João Silva ou Empresa Lda."
+                                        placeholder="Ex.: Mz Medical Lda."
                                         value={formData.nome}
                                         onChange={(e) =>
                                             setFormData((p) => ({ ...p, nome: e.target.value }))
@@ -889,7 +983,7 @@ export default function AnaliseTecMzmedicalPage() {
                                     <label>Email</label>
                                     <input
                                         type="email"
-                                        placeholder="email@exemplo.com"
+                                        placeholder="contato@mzmedical.com.br"
                                         value={formData.email}
                                         onChange={(e) =>
                                             setFormData((p) => ({ ...p, email: e.target.value }))
@@ -901,7 +995,7 @@ export default function AnaliseTecMzmedicalPage() {
                                     )}
                                 </div>
                                 <div className="form-field">
-                                    <label>NIF</label>
+                                    <label>NIF / CNPJ</label>
                                     <input
                                         type="text"
                                         placeholder="123456789"
@@ -919,7 +1013,7 @@ export default function AnaliseTecMzmedicalPage() {
                                     <label>Morada Fiscal</label>
                                     <input
                                         type="text"
-                                        placeholder="Rua, nº, código postal, cidade"
+                                        placeholder="Rua, número, código postal, cidade"
                                         value={formData.morada}
                                         onChange={(e) =>
                                             setFormData((p) => ({ ...p, morada: e.target.value }))
@@ -940,23 +1034,21 @@ export default function AnaliseTecMzmedicalPage() {
                 )}
             </AnimatePresence>
 
-            {/* ══════════════ STEP 2 — Terms & Conditions ══════════════ */}
+            {/* ══════════════ STEP 2 — Terms Modal ══════════════ */}
             <AnimatePresence>
                 {step === "terms" && (
                     <motion.div
                         className="modal-overlay"
-                        variants={overlayVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                         onClick={closeModal}
                     >
                         <motion.div
                             className="modal-container modal-terms"
-                            variants={modalVariants}
-                            initial="hidden"
-                            animate="visible"
-                            exit="exit"
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
                             onClick={(e) => e.stopPropagation()}
                         >
                             <button className="modal-close" onClick={closeModal}>
@@ -976,7 +1068,7 @@ export default function AnaliseTecMzmedicalPage() {
                                 <div className="stepper-line" />
                                 <div className="stepper-step">
                                     <div className="stepper-dot">3</div>
-                                    <span>Pagamento</span>
+                                    <span>Concluído</span>
                                 </div>
                             </div>
 
@@ -986,7 +1078,7 @@ export default function AnaliseTecMzmedicalPage() {
                                 </div>
                                 <h2 className="modal-title">Termos e Condições</h2>
                                 <p className="modal-subtitle">
-                                    Leia atentamente antes de prosseguir
+                                    Leia atentamente antes de aceitar a proposta
                                 </p>
                             </div>
 
@@ -998,61 +1090,62 @@ export default function AnaliseTecMzmedicalPage() {
 
                             <div className="terms-summary-box">
                                 <div className="terms-summary-row">
-                                    <span>Valor Único (com {discount}% desc.)</span>
-                                    <strong>{fmtFull(Math.round(totalUnicoComDesconto))}</strong>
+                                    <span>Plano Contratado</span>
+                                    <strong>{selectedPackage.title} ({formatNum(selectedPackage.totalPrice)} €)</strong>
                                 </div>
-                                {totalMensalComDesconto > 0 && (
-                                    <div className="terms-summary-row">
-                                        <span>Mensalidade (com {discount}% desc.)</span>
-                                        <strong>{fmtFull(Math.round(totalMensalComDesconto))}/mês</strong>
-                                    </div>
-                                )}
                                 <div className="terms-summary-row">
-                                    <span>Entrada (50% do valor único)</span>
-                                    <strong>{fmtFull(entradaPagamento)}</strong>
+                                    <span>Modalidade do Plano</span>
+                                    <strong>{paymentMode === "half" ? "50 / 50" : `Mensal (${selectedPackage.monthsCount} meses)`}</strong>
                                 </div>
-                                {caucao > 0 && (
+                                {monthlyCaucao > 0 && (
                                     <div className="terms-summary-row">
-                                        <span>Caução (último mês)</span>
-                                        <strong>{fmtFull(Math.round(caucao))}</strong>
+                                        <span>Caução 1.º Mês (Serviços Mensais)</span>
+                                        <strong>{formatNum(monthlyCaucao)} €</strong>
                                     </div>
                                 )}
                                 <div className="terms-summary-row highlight">
-                                    <span>Total a pagar (Entrada + Caução)</span>
-                                    <strong>{fmtFull(Math.round(entradaPagamento + caucao))}</strong>
+                                    <span>Montante Inicial a Pagar na Adjudicação</span>
+                                    <strong>{formatNum(upfrontAmount)} €</strong>
                                 </div>
                             </div>
 
-                            <div className="terms-info-box">
-                                <p>📋 Contrato mínimo de <strong>6 meses</strong>. A 1ª mensalidade serve como caução referente ao último mês. As mensalidades regulares iniciam após a entrega dos serviços.</p>
-                            </div>
-
-                            <button className="modal-accept-btn" onClick={handleAcceptTerms}>
-                                <Check size={18} />
-                                Li e aceito os Termos e Condições
+                            <button
+                                className="modal-accept-btn"
+                                onClick={handleAcceptTermsAndSendEmail}
+                                disabled={isSendingEmail}
+                            >
+                                {isSendingEmail ? (
+                                    <>
+                                        <Loader2 size={18} className="animate-spin" />
+                                        A enviar proposta...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Check size={18} />
+                                        Aceitar e Finalizar Proposta
+                                    </>
+                                )}
                             </button>
                         </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            {/* ══════════════ STEP 3 — Bank Transfer + PDF ══════════════ */}
+            {/* ══════════════ STEP 3 — Email Sent & Success Modal ══════════════ */}
             <AnimatePresence>
-                {step === "bank" && (
+                {step === "success" && (
                     <motion.div
                         className="modal-overlay"
-                        variants={overlayVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                         onClick={closeModal}
                     >
                         <motion.div
                             className="modal-container modal-bank"
-                            variants={modalVariants}
-                            initial="hidden"
-                            animate="visible"
-                            exit="exit"
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
                             onClick={(e) => e.stopPropagation()}
                         >
                             <button className="modal-close" onClick={closeModal}>
@@ -1071,57 +1164,37 @@ export default function AnaliseTecMzmedicalPage() {
                                 </div>
                                 <div className="stepper-line filled" />
                                 <div className="stepper-step active">
-                                    <div className="stepper-dot">3</div>
-                                    <span>Pagamento</span>
+                                    <div className="stepper-dot"><Check size={12} /></div>
+                                    <span>Concluído</span>
                                 </div>
                             </div>
 
                             <div className="modal-header">
-                                <div className="modal-icon-wrap bank">
-                                    <Landmark size={24} />
+                                <div className="modal-icon-wrap bank" style={{ background: "linear-gradient(135deg, #059669, #10b981)" }}>
+                                    <MailCheck size={28} />
                                 </div>
-                                <h2 className="modal-title">Dados para Transferência</h2>
+                                <h2 className="modal-title">E-mail Enviado com Sucesso!</h2>
                                 <p className="modal-subtitle">
-                                    Realize a transferência para confirmar a adjudicação
+                                    Enviámos uma cópia da proposta comercial e dados bancários para <strong>{formData.email}</strong>
                                 </p>
                             </div>
 
                             <div className="bank-details">
-                                <BankRow label="Entidade" value="Pedro Duarte Costa" copyable onCopy={copyToClipboard} copiedField={copiedField} />
-                                <BankRow label="NIF" value="231798423" copyable onCopy={copyToClipboard} copiedField={copiedField} />
-                                <BankRow label="IBAN" value="PT50003502100002261490090" copyable onCopy={copyToClipboard} copiedField={copiedField} />
-                                <BankRow label="Banco" value="CGD" copyable={false} onCopy={copyToClipboard} copiedField={copiedField} />
-                                <BankRow label="Referência" value="0125S" copyable onCopy={copyToClipboard} copiedField={copiedField} />
                                 <div className="bank-row highlight">
-                                    <span className="bank-label">Total (Entrada + Caução)</span>
-                                    <div className="bank-value-wrap">
-                                        <span className="bank-value big">{fmtFull(entradaPagamento + caucao)}</span>
-                                        <button className="copy-btn" onClick={() => copyToClipboard((entradaPagamento + caucao).toFixed(2), "montante")}>
-                                            {copiedField === "montante" ? <CheckCircle2 size={14} /> : <Copy size={14} />}
-                                        </button>
-                                    </div>
+                                    <span className="bank-label">Montante Inicial a Pagar</span>
+                                    <span className="bank-value big">{formatNum(upfrontAmount)} €</span>
                                 </div>
+                                <BankRow label="IBAN CGD" value="PT50003502100002261490090" copyable onCopy={copyToClipboard} copiedField={copiedField} />
+                                <BankRow label="Titular" value="Pedro Duarte Costa" copyable={false} onCopy={copyToClipboard} copiedField={copiedField} />
                             </div>
 
-                            {caucao > 0 && (
-                                <div className="bank-note">
-                                    <p>🔒 Caução (último mês): <strong>{fmtFull(Math.round(caucao))}</strong> — referente ao último mês de contrato.</p>
-                                </div>
-                            )}
-
-                            {totalMensalComDesconto > 0 && (
-                                <div className="bank-note">
-                                    <p>📋 A mensalidade de <strong>{fmtFull(Math.round(totalMensalComDesconto))}/mês</strong> será cobrada a partir da entrega dos serviços.</p>
-                                </div>
-                            )}
-
-                            <div className="bank-note secondary">
-                                <p>Os restantes <strong>{fmtFull(entradaPagamento)}</strong> (50%) serão liquidados na entrega final do projeto.</p>
+                            <div className="bank-note">
+                                <p>📧 <strong>Consulte o seu e-mail:</strong> O resumo completo da adjudicação e as instruções para envio do comprovativo foram enviadas para <strong>{formData.email}</strong>.</p>
                             </div>
 
                             <button className="modal-download-btn" onClick={handleDownloadPDF}>
                                 <Download size={18} />
-                                Descarregar Fatura Digital
+                                Descarregar Fatura Digital em PDF
                             </button>
                         </motion.div>
                     </motion.div>
@@ -1131,59 +1204,7 @@ export default function AnaliseTecMzmedicalPage() {
     );
 }
 
-/* ══════════════ Sub-components ══════════════ */
-function ServiceCard({
-    service,
-    index,
-    isSelected,
-    onToggle,
-    colorClass,
-}: {
-    service: Service;
-    index: number;
-    isSelected: boolean;
-    onToggle: (id: string) => void;
-    colorClass: string;
-}) {
-    const Icon = service.icon;
-    return (
-        <motion.div
-            className={`service-card ${isSelected ? "selected" : ""}`}
-            variants={cardVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-40px" }}
-            custom={index}
-            onClick={() => onToggle(service.id)}
-            whileTap={{ scale: 0.98 }}
-        >
-            <div className="card-check">
-                <Check size={14} strokeWidth={3} />
-            </div>
-            <div className={`card-icon-wrap ${colorClass}`}>
-                <Icon size={24} />
-            </div>
-            <h3 className="card-title">{service.titulo}</h3>
-            <p className="card-description">{service.descricao}</p>
-            <div className="card-prices">
-                <div className="price-tag unico">
-                    <span className="price-label">Único:</span>
-                    {service.valorAntigo && (
-                        <span style={{ textDecoration: "line-through", marginRight: "6px", opacity: 0.6, fontSize: "0.9em" }}>
-                            {service.valorAntigo}€
-                        </span>
-                    )}
-                    {service.valorUnico}€
-                </div>
-                <div className="price-tag mensal">
-                    <span className="price-label">Mensal:</span>
-                    {service.mensalidade > 0 ? `${service.mensalidade}€` : "0€"}
-                </div>
-            </div>
-        </motion.div>
-    );
-}
-
+/* ══════════════ Helper Component ══════════════ */
 function BankRow({
     label,
     value,
