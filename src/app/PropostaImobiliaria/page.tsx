@@ -3,7 +3,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-    Paintbrush,
     Layout,
     Settings,
     Heart,
@@ -17,7 +16,6 @@ import {
     Check,
     Sparkles,
     Shield,
-    TrendingUp,
     ArrowRight,
     Percent,
     X,

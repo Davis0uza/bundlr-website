@@ -9,7 +9,6 @@ export async function POST(req: Request) {
             paymentMode,
             upfrontAmount,
             monthlyCaucao,
-            totalMonthlyFee,
             activeMonthlyServices
         } = body;
 
@@ -127,8 +126,9 @@ export async function POST(req: Request) {
 
         console.log("✅ Email enviado via Brevo com sucesso! Message ID:", data.messageId);
         return NextResponse.json({ success: true, messageId: data.messageId });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Erro no envio de e-mail";
         console.error("❌ Erro no envio de e-mail:", error);
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
     }
 }

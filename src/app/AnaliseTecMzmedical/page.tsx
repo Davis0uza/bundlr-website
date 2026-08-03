@@ -199,8 +199,7 @@ async function generateInvoicePDF(
     totalAmount: number,
     upfrontAmount: number,
     packageUpfront: number,
-    monthlyCaucao: number,
-    totalMonthlyFee: number
+    monthlyCaucao: number
 ) {
     const { jsPDF } = await import("jspdf");
     const doc = new jsPDF("p", "mm", "a4");
@@ -480,23 +479,12 @@ export default function AnaliseTecMzmedicalPage() {
         }));
     }, [selectedMonthlyServices, isPacote3Selected]);
 
-    const { totalAmount, upfrontAmount, packageUpfront, monthlyCaucao, totalMonthlyFee, monthlyScheduleText } = useMemo(() => {
+    const { totalAmount, upfrontAmount, packageUpfront, monthlyCaucao, totalMonthlyFee } = useMemo(() => {
         const pkgTotal = selectedPackage.totalPrice;
         const pkgUpfront = paymentMode === "half" ? selectedPackage.halfPayment : selectedPackage.monthlyPayment;
         const caucao = isPacote3Selected ? 0 : activeMonthlyServicesDetails.reduce((acc, m) => acc + m.effectivePrice, 0);
         const totalUpfront = pkgUpfront + caucao;
         const monthlyFee = activeMonthlyServicesDetails.reduce((acc, m) => acc + m.effectivePrice, 0);
-
-        let schedule = "";
-        if (paymentMode === "half") {
-            schedule = `Entrada de 50% (${formatNum(selectedPackage.halfPayment)} €)` +
-                (caucao > 0 ? ` + Caução 1.º mês de serviços mensais (${formatNum(caucao)} €)` : "") +
-                ` na adjudicação; restantes 50% na entrega.`;
-        } else {
-            schedule = `1.ª prestação (${formatNum(selectedPackage.monthlyPayment)} €)` +
-                (caucao > 0 ? ` + Caução 1.º mês de serviços mensais (${formatNum(caucao)} €)` : "") +
-                ` na adjudicação; ${selectedPackage.monthsCount - 1} prestação(ões) restantes do pacote.`;
-        }
 
         return {
             totalAmount: pkgTotal,
@@ -504,7 +492,6 @@ export default function AnaliseTecMzmedicalPage() {
             packageUpfront: pkgUpfront,
             monthlyCaucao: caucao,
             totalMonthlyFee: monthlyFee,
-            monthlyScheduleText: schedule,
         };
     }, [selectedPackage, paymentMode, activeMonthlyServicesDetails, isPacote3Selected]);
 
@@ -571,10 +558,9 @@ export default function AnaliseTecMzmedicalPage() {
             totalAmount,
             upfrontAmount,
             packageUpfront,
-            monthlyCaucao,
-            totalMonthlyFee
+            monthlyCaucao
         );
-    }, [formData, selectedPackage, activeMonthlyServicesDetails, paymentMode, totalAmount, upfrontAmount, packageUpfront, monthlyCaucao, totalMonthlyFee]);
+    }, [formData, selectedPackage, activeMonthlyServicesDetails, paymentMode, totalAmount, upfrontAmount, packageUpfront, monthlyCaucao]);
 
     return (
         <div className="analise-page">
